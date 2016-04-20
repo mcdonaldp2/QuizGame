@@ -12,6 +12,7 @@
 		BCA62E9A1CC814C000B4A22B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCA62E981CC814C000B4A22B /* Main.storyboard */; };
 		BCA62E9C1CC814C000B4A22B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCA62E9B1CC814C000B4A22B /* Assets.xcassets */; };
 		BCA62E9F1CC814C000B4A22B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCA62E9D1CC814C000B4A22B /* LaunchScreen.storyboard */; };
+		BCA62EA71CC838AC00B4A22B /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA62EA61CC838AC00B4A22B /* Question.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		BCA62E9B1CC814C000B4A22B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BCA62E9E1CC814C000B4A22B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BCA62EA01CC814C000B4A22B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCA62EA61CC838AC00B4A22B /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 				BCA62E9B1CC814C000B4A22B /* Assets.xcassets */,
 				BCA62E9D1CC814C000B4A22B /* LaunchScreen.storyboard */,
 				BCA62EA01CC814C000B4A22B /* Info.plist */,
+				BCA62EA61CC838AC00B4A22B /* Question.swift */,
 			);
 			path = QuizGame;
 			sourceTree = "<group>";
@@ -136,6 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCA62EA71CC838AC00B4A22B /* Question.swift in Sources */,
 				BCA62E971CC814C000B4A22B /* ViewController.swift in Sources */,
 				BCA62E951CC814C000B4A22B /* AppDelegate.swift in Sources */,
 			);
@@ -289,6 +293,7 @@
 				BCA62EA51CC814C000B4A22B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
