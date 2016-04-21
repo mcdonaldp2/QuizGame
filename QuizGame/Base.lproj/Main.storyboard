@@ -32,7 +32,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="QJJ-yg-Gfv">
-                        <barButtonItem key="rightBarButtonItem" title="connect" id="97V-MZ-6oE"/>
+                        <barButtonItem key="rightBarButtonItem" title="connect" id="97V-MZ-6oE">
+                            <connections>
+                                <action selector="connect:" destination="BYZ-38-t0r" id="WsQ-Xf-dQg"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="connectBarButton" destination="97V-MZ-6oE" id="hPO-Wn-cKs"/>
