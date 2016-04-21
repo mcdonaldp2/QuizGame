@@ -24,6 +24,9 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MPc-cx-Jw0" userLabel="multiPlayerButton">
                                 <rect key="frame" x="262" y="366" width="76" height="30"/>
                                 <state key="normal" title="MultiPlayer"/>
+                                <connections>
+                                    <action selector="goToMultiplayerQuiz:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4My-kW-3jc"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3c-xa-APG" userLabel="Logo">
                                 <rect key="frame" x="180" y="100" width="240" height="128"/>
@@ -94,6 +97,22 @@
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="C"/>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BJW-kt-GT1">
+                                <rect key="frame" x="49" y="170" width="120" height="128"/>
+                                <color key="backgroundColor" cyan="0.6067082882" magenta="0.1620092018" yellow="0.0" black="0.0" alpha="1" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xmN-rB-9Ae">
+                                <rect key="frame" x="179" y="170" width="120" height="128"/>
+                                <color key="backgroundColor" cyan="0.6067082882" magenta="0.1620092018" yellow="0.0" black="0.0" alpha="1" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OX4-tm-UDa">
+                                <rect key="frame" x="307" y="170" width="120" height="128"/>
+                                <color key="backgroundColor" cyan="0.6067082882" magenta="0.1620092018" yellow="0.0" black="0.0" alpha="1" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tch-Sk-Imz">
+                                <rect key="frame" x="433" y="170" width="120" height="128"/>
+                                <color key="backgroundColor" cyan="0.6067082882" magenta="0.1620092018" yellow="0.0" black="0.0" alpha="1" colorSpace="custom" customColorSpace="genericCMYKColorSpace"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

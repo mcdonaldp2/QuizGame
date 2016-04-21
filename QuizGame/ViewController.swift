@@ -15,6 +15,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     @IBOutlet weak var singlePlayerButton: UIButton!
     @IBOutlet weak var multiplayerButton: UIButton!
     @IBOutlet weak var connectBarButton: UIBarButtonItem!
+    
     var session: MCSession!
     var peerID: MCPeerID!
     
@@ -32,11 +33,6 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
         
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
-        
-        
-        
-        
-        
         assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
         
         assistant.start()
@@ -56,10 +52,21 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         presentViewController(self.browser, animated: true, completion: nil)
     }
     
+    @IBAction func goToMultiplayerQuiz(sender: UIButton) {
+        performSegueWithIdentifier("quizSegue", sender: self)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "quizSegue" {
+            if let destination = segue.destinationViewController as? QuizViewController {
+                
+            }
+            
+        }
+    }
     
     
-    
-    //MARK - MCBrowserViewController stuff
+    //MARK - MCBrowserViewController functions
     
     
     func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
@@ -127,6 +134,10 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
         
     }
+    
+    
+    
+    
 
     
 

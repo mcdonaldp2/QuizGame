@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9C382CC61CC83A9200F70F09 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C382CC51CC83A9200F70F09 /* QuizViewController.swift */; };
 		9C5844131CC84BFA00922943 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5844121CC84BFA00922943 /* Question.swift */; };
+		9CCBEBA31CC8839E00B25AC3 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCBEBA21CC8839E00B25AC3 /* MultipeerConnectivity.framework */; };
 		BCA62E951CC814C000B4A22B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA62E941CC814C000B4A22B /* AppDelegate.swift */; };
 		BCA62E971CC814C000B4A22B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA62E961CC814C000B4A22B /* ViewController.swift */; };
 		BCA62E9A1CC814C000B4A22B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCA62E981CC814C000B4A22B /* Main.storyboard */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		9C382CC51CC83A9200F70F09 /* QuizViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
 		9C5844121CC84BFA00922943 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		9CCBEBA21CC8839E00B25AC3 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		BCA62E911CC814C000B4A22B /* QuizGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCA62E941CC814C000B4A22B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BCA62E961CC814C000B4A22B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CCBEBA31CC8839E00B25AC3 /* MultipeerConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +47,7 @@
 		BCA62E881CC814C000B4A22B = {
 			isa = PBXGroup;
 			children = (
+				9CCBEBA21CC8839E00B25AC3 /* MultipeerConnectivity.framework */,
 				BCA62E931CC814C000B4A22B /* QuizGame */,
 				BCA62E921CC814C000B4A22B /* Products */,
 			);
