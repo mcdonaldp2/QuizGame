@@ -103,6 +103,10 @@
 		BCA62E891CC814C000B4A22B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					A,
+					B,
+				);
 				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Paul McDonald ";

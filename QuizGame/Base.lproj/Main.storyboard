@@ -69,16 +69,25 @@
                                 <rect key="frame" x="89" y="386" width="200" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="A"/>
+                                <connections>
+                                    <action selector="sendAnswer:" destination="DYq-57-Dy0" eventType="touchUpInside" id="tKV-h6-NNQ"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uaU-Ou-NxS" userLabel="dButton">
                                 <rect key="frame" x="312" y="429" width="200" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="D"/>
+                                <connections>
+                                    <action selector="sendAnswer:" destination="DYq-57-Dy0" eventType="touchUpInside" id="hka-RK-v5Q"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJN-kT-Gry" userLabel="bButton">
                                 <rect key="frame" x="312" y="386" width="200" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="B"/>
+                                <connections>
+                                    <action selector="sendAnswer:" destination="DYq-57-Dy0" eventType="touchUpInside" id="74c-Xu-rOq"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="questionLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="25C-Pt-sfN">
                                 <rect key="frame" x="246" y="326" width="108" height="21"/>
@@ -96,6 +105,9 @@
                                 <rect key="frame" x="89" y="429" width="200" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="C"/>
+                                <connections>
+                                    <action selector="sendAnswer:" destination="DYq-57-Dy0" eventType="touchUpInside" id="Li3-tN-Arc"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BJW-kt-GT1">
                                 <rect key="frame" x="49" y="170" width="120" height="128"/>

@@ -22,7 +22,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     var browser: MCBrowserViewController!
     var assistant: MCAdvertiserAssistant!
     
-    let serviceType = "Chat"
+    let serviceType = "g2-QuizGame"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,7 +59,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "quizSegue" {
             if let destination = segue.destinationViewController as? QuizViewController {
-                
+                destination.session = session as MCSession
             }
             
         }
