@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C365BF11CCA89B000CA658E /* playerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C365BF01CCA89B000CA658E /* playerManager.swift */; };
 		9C382CC61CC83A9200F70F09 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C382CC51CC83A9200F70F09 /* QuizViewController.swift */; };
 		9C5844131CC84BFA00922943 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5844121CC84BFA00922943 /* Question.swift */; };
 		9CCBEBA31CC8839E00B25AC3 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CCBEBA21CC8839E00B25AC3 /* MultipeerConnectivity.framework */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9C365BF01CCA89B000CA658E /* playerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = playerManager.swift; sourceTree = "<group>"; };
 		9C382CC51CC83A9200F70F09 /* QuizViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
 		9C5844121CC84BFA00922943 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		9CCBEBA21CC8839E00B25AC3 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
@@ -68,6 +70,7 @@
 				BCA62E961CC814C000B4A22B /* ViewController.swift */,
 				9C382CC51CC83A9200F70F09 /* QuizViewController.swift */,
 				9C5844121CC84BFA00922943 /* Question.swift */,
+				9C365BF01CCA89B000CA658E /* playerManager.swift */,
 				BCA62E981CC814C000B4A22B /* Main.storyboard */,
 				BCA62E9B1CC814C000B4A22B /* Assets.xcassets */,
 				BCA62E9D1CC814C000B4A22B /* LaunchScreen.storyboard */,
@@ -157,6 +160,7 @@
 				9C382CC61CC83A9200F70F09 /* QuizViewController.swift in Sources */,
 				BCA62EAB1CC8422600B4A22B /* test.swift in Sources */,
 				BCA62E971CC814C000B4A22B /* ViewController.swift in Sources */,
+				9C365BF11CCA89B000CA658E /* playerManager.swift in Sources */,
 				BCA62E951CC814C000B4A22B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

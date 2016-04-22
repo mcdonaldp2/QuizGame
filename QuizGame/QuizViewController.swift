@@ -29,6 +29,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     var answersArray = [String]()
     var selectedAnswer: String?
     
+    var pManager = playerManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -37,6 +39,10 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         self.peerID = MCPeerID(displayName: UIDevice.currentDevice().name)
         //self.session = MCSession(peer: peerID)
         
+        pManager.addPlayer(peerID.displayName)
+        addConnectedPlayers()
+        print("checking for totalPlayers")
+        pManager.printPlayers()
         
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
 //        assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
@@ -54,18 +60,23 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     }
     
     @IBAction func sendAnswer(sender: UIButton) {
+        
         let a = sender.titleLabel!.text
         let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
         print("Letter: \(letter!)")
         print("Peers: \(session.connectedPeers.count)")
-        selectedAnswer = letter!
+        //selectedAnswer = letter!
         
-        let dataToSend = NSKeyedArchiver.archivedDataWithRootObject(letter!)
+        
+        pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
+        pManager.printPlayers()
+        let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+
+        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
         
         do{
             //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
-            
-            try session.sendData(dataToSend, toPeers: session.connectedPeers, withMode: .Unreliable)
+            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
             
             
         }
@@ -85,6 +96,12 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         // Pass the selected object to the new view controller.
     }
     */
+    
+    func addConnectedPlayers() {
+        for player in session.connectedPeers {
+            pManager.addPlayer(player.displayName)
+        }
+    }
     
     
     
@@ -121,11 +138,18 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             
             print("inside didReceiveData")
             
-            if let letter = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String {
-                self.answersArray.append(letter)
-                print("letter added to array")
-                print("Letter in recieved: \(letter)")
+            if let playerValues = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? Dictionary<String, AnyObject> {
+                //self.answersArray.append(letter)
+                let playerId = playerValues["playerId"] as! String
+                let playerAnswer = playerValues["playerAnswer"] as! String
+                let playerScore = playerValues["playerScore"] as! Int
                 
+                let playerVal = playerManager.PlayerValues(answer: playerAnswer, score: playerScore)
+                
+                self.pManager.updatePlayerInfo(playerId, playerValues: playerVal)
+               
+                print("\(playerId) \(playerAnswer) \(playerScore)")
+                self.pManager.printPlayers()
                 
             }
             
