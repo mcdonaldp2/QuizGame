@@ -37,3 +37,16 @@ class Question {
         return self.correctOption
     }
 }
+
+class QuestionHandler {
+    var questionArray: [Question]!
+    var questionCount: Int!
+    var topic: String!
+    
+    
+    init(array:[Question], questCount: Int, questTopic: String) {
+        self.questionArray = array
+        self.questionCount = questCount
+        self.topic = questTopic
+    }
+}

@@ -9,7 +9,9 @@
 import UIKit
 import MultipeerConnectivity
 
-class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessionDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessionDelegate, UINavigationControllerDelegate,  NSURLConnectionDelegate {
+    
+    var handler: QuestionHandler!
 
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var singlePlayerButton: UIButton!
@@ -41,6 +43,10 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         session.delegate = self
         browser.delegate = self
 
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        beginConnection()
     }
 
     override func didReceiveMemoryWarning() {
@@ -135,12 +141,59 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
     }
     
+    func beginConnection (){
+        let url_string : String = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz1.json"
+        let url : NSURL = NSURL(string: url_string)!
+        
+        
+        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: url)
+        
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(urlRequest) {
+            (data, response, error) -> Void in
+            
+            let httpResponse = response as! NSHTTPURLResponse
+            let statusCode = httpResponse.statusCode
+            
+            if (statusCode == 200) {
+                //print("Everyone is fine, file downloaded successfully.")
+                do{
+                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options:.AllowFragments)
+                    //print(json)
+                    self.convertJSON(json)
+                }catch {
+                    print("Error with Json: \(error)")
+                }
+            }
+        }
+        
+        task.resume()
+    }
     
+    func convertJSON(json: AnyObject){
+        print(json)
+        var questArray: [Question] = []
+        
+        let questionCount = json["numberOfQuestions"] as! Int
+        let topic = json["topic"] as! String
+        
+        if let questions = json["questions"] as? [[String: AnyObject]] {
+            
+            for question in questions {
+                
+                let correctOption = question["correctOption"] as! String
+                let questionNumber = question["number"] as! Int
+                let options = question["options"] as! [String: String]
+                let sentence = question["questionSentence"] as! String
+                questArray.append(Question(number: questionNumber, questionSentence: sentence, options: options, correctOption: correctOption))
+                
+            }
+            
+            handler = QuestionHandler(array: questArray, questCount: questionCount, questTopic: topic)
+            
+        }
+        
+    }
     
-    
-
-    
-
-
 }
 
