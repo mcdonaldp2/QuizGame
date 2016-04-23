@@ -29,6 +29,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     var answersArray = [String]()
     var selectedAnswer: String?
     
+    //Handles players answer/scores
     var pManager = playerManager()
     
     override func viewDidLoad() {
@@ -61,15 +62,18 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     @IBAction func sendAnswer(sender: UIButton) {
         
+        //Determines what button is pressed
         let a = sender.titleLabel!.text
         let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
         print("Letter: \(letter!)")
         print("Peers: \(session.connectedPeers.count)")
         //selectedAnswer = letter!
         
-        
+        //updates current players answer after selection
         pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
         pManager.printPlayers()
+        
+        //dictionary that holds player values
         let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
 
         let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
@@ -133,9 +137,6 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         // this needs to be run on the main thread
         dispatch_async(dispatch_get_main_queue(),{
             
-            //var msg = NSString(data: data, encoding: NSUTF16StringEncoding)
-            //self.updateChatView(msg! as String, id: peerID)
-            
             print("inside didReceiveData")
             
             if let playerValues = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? Dictionary<String, AnyObject> {
@@ -144,8 +145,10 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
                 let playerAnswer = playerValues["playerAnswer"] as! String
                 let playerScore = playerValues["playerScore"] as! Int
                 
+                //obeject that holds an answer/score
                 let playerVal = playerManager.PlayerValues(answer: playerAnswer, score: playerScore)
                 
+                //updates playerAnswer/score in pManager
                 self.pManager.updatePlayerInfo(playerId, playerValues: playerVal)
                
                 print("\(playerId) \(playerAnswer) \(playerScore)")
