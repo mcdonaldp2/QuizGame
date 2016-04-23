@@ -66,6 +66,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         if segue.identifier == "quizSegue" {
             if let destination = segue.destinationViewController as? QuizViewController {
                 destination.session = session as MCSession
+                destination.qHandler = handler as QuestionHandler
             }
             
         }

@@ -31,6 +31,13 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     //Handles players answer/scores
     var pManager = playerManager()
+    var qHandler: QuestionHandler!
+    
+    var questionTotal: Int!
+    var questionNumber = 1
+    var question: String!
+    var correctAnswer: String!
+    var options = [String : String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +56,11 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
 //        assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
 //        
 //        assistant.start()
+        
+        questionTotal = qHandler.questionCount
+        question = qHandler.questionArray[0].questionSentence
+        correctAnswer = qHandler.questionArray[0].correctOption
+        options = qHandler.questionArray[0].options
         
         
         session.delegate = self
@@ -70,6 +82,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         //selectedAnswer = letter!
         
         //updates current players answer after selection
+        checkAnswer(letter!)
         pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
         pManager.printPlayers()
         
@@ -104,6 +117,12 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     func addConnectedPlayers() {
         for player in session.connectedPeers {
             pManager.addPlayer(player.displayName)
+        }
+    }
+    
+    func checkAnswer(playerAnswer: String) {
+        if playerAnswer == correctAnswer {
+            pManager.incrementPlayerScore(peerID.displayName)
         }
     }
     
