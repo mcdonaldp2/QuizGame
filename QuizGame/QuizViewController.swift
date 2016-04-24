@@ -42,6 +42,9 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     var correctAnswer: String!
     var options = [String : String]()
     
+    var timerCount = 20
+    var questionTimer: NSTimer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -68,6 +71,9 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         
         session.delegate = self
         browser.delegate = self
+        
+        
+        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  Selector("countDown"), userInfo: nil, repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -82,7 +88,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
         print("Letter: \(letter!)")
         print("Peers: \(session.connectedPeers.count)")
-        //selectedAnswer = letter!
+        selectedAnswer = letter!
         
         //updates current players answer after selection
         checkAnswer(letter!)
@@ -126,6 +132,63 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     func checkAnswer(playerAnswer: String) {
         if playerAnswer == correctAnswer {
             pManager.incrementPlayerScore(peerID.displayName)
+        }
+    }
+    
+    func updatePlayerAnswersUI() {
+        var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer!))!
+        answerImages[0] = UIImageView(image: image)
+        //answerImages[0].frame = CGRectMake(0,0,100,200)
+        
+        
+        var count = 1
+        for (playerName, playerValues) in pManager.players {
+            if (playerName != peerID.displayName) {
+                var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
+                answerImages[count] = UIImageView(image: image)
+                //answerImages[0].frame = CGRectMake(0,0,100,200)
+            }
+            count += 1
+        }
+    }
+    
+    func getAnswerImageName(answer: String) -> String {
+        if (answer == "A") {
+            return "aIcon"
+        } else if (answer == "B") {
+            return "bIcon"
+        } else if (answer == "C") {
+            return "cIcon"
+        } else {
+            return "dIcon"
+        }
+        
+        return "something went wrong"
+    }
+    
+    func updateScoreLabels() {
+        scoreLabels[0].text = String(pManager.players[peerID.displayName]!.score)
+        var count = 1
+        for (playerName, playerValues) in pManager.players {
+            if (playerName != peerID.displayName) {
+                //var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
+                scoreLabels[count].text = String(playerValues.score)
+                //answerImages[0].frame = CGRectMake(0,0,100,200)
+            }
+            count += 1
+        }
+
+    }
+    
+    func countDown() {
+        timerCount -= 1
+        
+        timerLabel.text = "\(timerCount)"
+        
+        if timerCount == 0 {
+            questionTimer.invalidate()
+            timerCount == 20
+            updatePlayerAnswersUI()
         }
     }
     
