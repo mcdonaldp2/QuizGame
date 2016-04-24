@@ -129,8 +129,6 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         }
     }
     
-    
-    
     //MARK - MCBrowserViewController functions
     
     

@@ -58,6 +58,9 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         presentViewController(self.browser, animated: true, completion: nil)
     }
     
+    @IBAction func goToSinglePlayerQuiz(sender: UIButton) {
+        performSegueWithIdentifier("singleQuizSegue", sender: self)
+    }
     @IBAction func goToMultiplayerQuiz(sender: UIButton) {
         performSegueWithIdentifier("quizSegue", sender: self)
     }
@@ -69,6 +72,10 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
                 destination.qHandler = handler as QuestionHandler
             }
             
+        } else if segue.identifier == "singleQuizSegue" {
+            if let destination = segue.destinationViewController as? SingleQuizViewController {
+                destination.qHandler = handler as QuestionHandler
+            }
         }
     }
     
