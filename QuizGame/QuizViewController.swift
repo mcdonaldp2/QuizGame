@@ -18,6 +18,9 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     @IBOutlet weak var cButton: UIButton!
     @IBOutlet weak var dButton: UIButton!
     
+    @IBOutlet var answerImages: [UIImageView]!
+    @IBOutlet var scoreLabels: [UILabel]!
+    
     var session: MCSession!
     var peerID: MCPeerID!
     
