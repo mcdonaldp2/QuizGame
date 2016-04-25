@@ -460,27 +460,33 @@
                                         <exclude reference="7yv-RW-dKK"/>
                                     </mask>
                                 </variation>
+                                <connections>
+                                    <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="bt1-BN-Qk4"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgE-On-vbY" userLabel="dButton">
+                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgE-On-vbY" userLabel="dButton">
                                 <rect key="frame" x="310" y="531" width="250" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="D"/>
+                                <connections>
+                                    <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="y9F-Ob-mUM"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sf-PY-Gjb" userLabel="bButton">
+                            <button opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sf-PY-Gjb" userLabel="bButton">
                                 <rect key="frame" x="310" y="491" width="250" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="B"/>
+                                <connections>
+                                    <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="ESO-SL-hj0"/>
+                                </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="questionLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xAN-mb-7dW">
-                                <rect key="frame" x="40" y="450" width="520" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wpq-5N-CA2" userLabel="cButton">
+                            <button opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wpq-5N-CA2" userLabel="cButton">
                                 <rect key="frame" x="40" y="531" width="250" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="C"/>
+                                <connections>
+                                    <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="Lyt-SE-5LN"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Eka-Ob-p7k">
                                 <rect key="frame" x="250" y="140" width="99" height="91"/>
@@ -504,6 +510,12 @@
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="timerLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tgM-9U-tDw" userLabel="timerLabel">
                                 <rect key="frame" x="260" y="111" width="81" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="questionLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xAN-mb-7dW">
+                                <rect key="frame" x="40" y="450" width="520" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -541,6 +553,15 @@
                     <navigationItem key="navigationItem" title="Title" id="225-s2-p6k">
                         <barButtonItem key="backBarButtonItem" title="Back" id="vaX-An-12b"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="aButton" destination="pPL-Ge-fac" id="gyn-nr-yQv"/>
+                        <outlet property="answerImage" destination="Eka-Ob-p7k" id="g9r-rS-Dk6"/>
+                        <outlet property="bButton" destination="7sf-PY-Gjb" id="vIn-Pm-du6"/>
+                        <outlet property="cButton" destination="Wpq-5N-CA2" id="TDH-Wx-LyR"/>
+                        <outlet property="dButton" destination="cgE-On-vbY" id="I19-vB-pdU"/>
+                        <outlet property="questionLabel" destination="xAN-mb-7dW" id="sme-Vs-SiH"/>
+                        <outlet property="timerLabel" destination="tgM-9U-tDw" id="m8J-Pd-owD"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qXq-NP-Que" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationItem title="tits" id="My9-XI-TbY"/>
