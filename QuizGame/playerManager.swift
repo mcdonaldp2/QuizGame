@@ -51,7 +51,7 @@ class playerManager {
     
     func printPlayers() {
         for (playerId, _ ) in players {
-            print("player: \(playerId) Answer: \(players[playerId]!.currentAnswer!) Score: \(players[playerId]!.score)")
+            print("player: \(playerId) Answer: \(players[playerId]!.currentAnswer) Score: \(players[playerId]!.score)")
         }
     }
     

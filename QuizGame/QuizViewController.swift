@@ -53,9 +53,13 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         self.peerID = MCPeerID(displayName: UIDevice.currentDevice().name)
         //self.session = MCSession(peer: peerID)
         
+        print("answerImages count: \(answerImages.count)")
+        print("scoreLabels count: \(scoreLabels.count)")
+        
         pManager.addPlayer(peerID.displayName)
         addConnectedPlayers()
         print("checking for totalPlayers")
+        print("total players: \(pManager.players.count)")
         pManager.printPlayers()
         
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
@@ -137,7 +141,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     func updatePlayerAnswersUI() {
         var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer!))!
-        answerImages[0] = UIImageView(image: image)
+        answerImages[0].image = image
         //answerImages[0].frame = CGRectMake(0,0,100,200)
         
         
@@ -145,7 +149,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         for (playerName, playerValues) in pManager.players {
             if (playerName != peerID.displayName) {
                 var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
-                answerImages[count] = UIImageView(image: image)
+                answerImages[count].image = image
                 //answerImages[0].frame = CGRectMake(0,0,100,200)
             }
             count += 1
@@ -167,12 +171,13 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     }
     
     func updateScoreLabels() {
-        scoreLabels[0].text = String(pManager.players[peerID.displayName]!.score)
+        print("my score: \(pManager.players[peerID.displayName]!.score)")
+        self.scoreLabels[0].text = String(pManager.players[peerID.displayName]!.score)
         var count = 1
         for (playerName, playerValues) in pManager.players {
             if (playerName != peerID.displayName) {
                 //var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
-                scoreLabels[count].text = String(playerValues.score)
+                self.scoreLabels[count].text = String(playerValues.score)
                 //answerImages[0].frame = CGRectMake(0,0,100,200)
             }
             count += 1
@@ -189,6 +194,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             questionTimer.invalidate()
             timerCount == 20
             updatePlayerAnswersUI()
+            updateScoreLabels()
         }
     }
     
