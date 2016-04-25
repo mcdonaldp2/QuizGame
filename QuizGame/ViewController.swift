@@ -34,6 +34,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         self.session = MCSession(peer: peerID)
         
         
+        
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
         assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
         
@@ -42,6 +43,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
         session.delegate = self
         browser.delegate = self
+        
+        browser.maximumNumberOfPeers = 4
 
     }
     
@@ -62,6 +65,21 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         performSegueWithIdentifier("singleQuizSegue", sender: self)
     }
     @IBAction func goToMultiplayerQuiz(sender: UIButton) {
+        let dataToSend = "goToMulti"
+        
+        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+        
+        do{
+            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+            
+            
+        }
+        catch let err
+        {
+            print("Error in sending data \(err)")
+        }
+
         performSegueWithIdentifier("quizSegue", sender: self)
     }
     
@@ -113,13 +131,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             
             print("inside didReceiveData")
             
-            if let image = UIImage(data: data) {
-                
-                
-                
-            }
-            else if let receivedString =  NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String{
-                
+            if let receivedString =  NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String{
+                self.performSegueWithIdentifier("quizSegue", sender: self)
             }
         })
     }

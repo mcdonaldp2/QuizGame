@@ -30,14 +30,15 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     let serviceType = "g2-QuizGame"
     
     var answersArray = [String]()
-    var selectedAnswer: String?
+    var selectedAnswer = "N/A"
     
     //Handles players answer/scores
     var pManager = playerManager()
     var qHandler: QuestionHandler!
     
+    var currentQuestion: Question!
     var questionTotal: Int!
-    var questionNumber = 1
+    var questionNumber = 0
     var question: String!
     var correctAnswer: String!
     var options = [String : String]()
@@ -72,12 +73,14 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         correctAnswer = qHandler.questionArray[0].correctOption
         options = qHandler.questionArray[0].options
         
+        setQuestion(qHandler.questionArray[questionNumber])
+        
         
         session.delegate = self
         browser.delegate = self
         
         
-        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  Selector("countDown"), userInfo: nil, repeats: true)
+        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -140,15 +143,16 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     }
     
     func updatePlayerAnswersUI() {
-        var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer!))!
-        answerImages[0].image = image
-        //answerImages[0].frame = CGRectMake(0,0,100,200)
-        
+        if (getAnswerImageName(selectedAnswer) != "something went wrong") {
+            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+            answerImages[0].image = image
+            //answerImages[0].frame = CGRectMake(0,0,100,200)
+        }
         
         var count = 1
         for (playerName, playerValues) in pManager.players {
-            if (playerName != peerID.displayName) {
-                var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
+            if (playerName != peerID.displayName) && getAnswerImageName(playerValues.currentAnswer) != "something went wrong"{
+                var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer))!
                 answerImages[count].image = image
                 //answerImages[0].frame = CGRectMake(0,0,100,200)
             }
@@ -163,7 +167,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             return "bIcon"
         } else if (answer == "C") {
             return "cIcon"
-        } else {
+        } else if (answer == "D") {
             return "dIcon"
         }
         
@@ -171,7 +175,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     }
     
     func updateScoreLabels() {
-        print("my score: \(pManager.players[peerID.displayName]!.score)")
+        //print("my score: \(pManager.players[peerID.displayName]!.score)")
         self.scoreLabels[0].text = String(pManager.players[peerID.displayName]!.score)
         var count = 1
         for (playerName, playerValues) in pManager.players {
@@ -195,8 +199,58 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             timerCount == 20
             updatePlayerAnswersUI()
             updateScoreLabels()
+            _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+        }
+        
+        
+    }
+    
+    func nextQuestion() {
+        questionNumber += 1
+        
+        if questionNumber < qHandler.questionCount {
+            hideAnswers()
+            pManager.resetCurrentAnswers()
+            timerCount = 20
+            timerLabel.text = String(timerCount)
+            correctAnswer = qHandler.questionArray[questionNumber].correctOption
+            setQuestion(qHandler.questionArray[questionNumber])
+            questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
+        } else {
+            print("game over")
         }
     }
+    
+    func setQuestion(question: Question) {
+        // nextQuestionTimer.invalidate()
+        currentQuestion = question
+        var options = question.getOptions()
+        
+        questionLabel.text = String(question.getNumber()) + "/" + String(qHandler.questionCount) + " " + question.getQuestion()
+        
+        aButton.setTitle("A). " + options["A"]!, forState: .Normal)
+        bButton.setTitle("B). " + options["B"]!, forState: .Normal)
+        cButton.setTitle("C). " + options["C"]!, forState: .Normal)
+        dButton.setTitle("D). " + options["D"]!, forState: .Normal)
+        
+    }
+    
+    func hideAnswers() {
+        for image in answerImages {
+            image.image = nil
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     //MARK - MCBrowserViewController functions
     

@@ -34,6 +34,12 @@ class playerManager {
         print("\(playerId) score: \(players[playerId]!.score)")
     }
     
+    func resetCurrentAnswers() {
+        for (playerId, playerVals) in players {
+            playerVals.currentAnswer = "N/A"
+        }
+    }
+    
     
     func getWinner() -> String {
         var highscore = 0
@@ -59,7 +65,7 @@ class playerManager {
     
     //Helper class to hold letter answers/scores
     class PlayerValues {
-        var currentAnswer: String?
+        var currentAnswer = "N/A"
         var score: Int = 0
         
         init(answer: String, score: Int) {
