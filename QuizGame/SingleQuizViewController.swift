@@ -29,11 +29,13 @@ class SingleQuizViewController: UIViewController {
     
     var answer: String!
     var answered: Bool!
+    var correctCount: Int!
     
     var nextQuestionTimer: NSTimer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = qHandler.topic
         playQuiz()
     }
     
@@ -44,28 +46,66 @@ class SingleQuizViewController: UIViewController {
             switch sender.tag {
             case 0 :
                 answer = "A"
-                checkAnswer("A")
                 answerImage.image = UIImage(named: "aIcon")
                 break
             case 1 :
                 answer = "B"
-                checkAnswer("B")
                 answerImage.image = UIImage(named: "bIcon")
                 break
             case 2 :
                 answer = "C"
-                checkAnswer("C")
                 answerImage.image = UIImage(named: "cIcon")
                 break
             case 3:
                 answer = "D"
-                checkAnswer("D")
                 answerImage.image = UIImage(named: "dIcon")
                 break
             default:
                 break
             }
             answered = true
+        } else {
+            switch sender.tag {
+            case 0 :
+                let secondClick = "A"
+                if secondClick == answer {
+                    checkAnswer()
+                }else {
+                    answered = false
+                }
+                answerImage.image = UIImage(named: "aIcon")
+                break
+            case 1 :
+                let secondClick = "B"
+                if secondClick == answer {
+                    checkAnswer()
+                }else {
+                    answered = false
+                }
+                answerImage.image = UIImage(named: "bIcon")
+                break
+            case 2 :
+                let secondClick = "C"
+                if secondClick == answer {
+                    checkAnswer()
+                }else {
+                    answered = false
+                }
+                answerImage.image = UIImage(named: "cIcon")
+                break
+            case 3:
+                let secondClick = "D"
+                if secondClick == answer {
+                    checkAnswer()
+                }else {
+                    answered = false
+                }
+                answerImage.image = UIImage(named: "dIcon")
+                break
+            default:
+                break
+            }
+
         }
     }
     
@@ -79,15 +119,15 @@ class SingleQuizViewController: UIViewController {
         timerLabel.text = String(timerCount)
     }
     
-    func checkAnswer(answer: String) {
+    func checkAnswer() {
         questionTimer.invalidate()
        
         if currentQuestion.correctOption == answer {
-            print("That's correct!")
-            
-            
+            correctCount = correctCount + 1
+            timerLabel.text = "CORRECT!"
+            navigationItem.rightBarButtonItem?.title = "Score: " + String(correctCount)
         }else{
-            print("wrong")
+            timerLabel.text = "WRONG ;_;"
         }
         
         if questionCount < qHandler.questionCount {
@@ -111,14 +151,13 @@ class SingleQuizViewController: UIViewController {
         else {
             print("Quiz is over!")
             
-            let gameOverAlert = UIAlertController(title: "Quiz Over!", message: "All data will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
+            let gameOverAlert = UIAlertController(title: "Quiz Over!", message: "You got " + String(correctCount) + " out of " + String(qHandler.questionCount) + " correct. ", preferredStyle: UIAlertControllerStyle.Alert)
             
             gameOverAlert.addAction(UIAlertAction(title: "Back To Menu", style: .Default, handler: { (action: UIAlertAction!) in
-                print("Handle Ok logic here")
+                self.performSegueWithIdentifier("unwindToMenu", sender: nil)
             }))
             
             gameOverAlert.addAction(UIAlertAction(title: "Replay Quiz", style: .Default, handler: { (action: UIAlertAction!) in
-                print("Handle Cancel Logic here")
                 self.playQuiz()
             }))
             
@@ -132,17 +171,17 @@ class SingleQuizViewController: UIViewController {
         currentQuestion = question
         var options = question.getOptions()
         
-        questionLabel.text = question.getQuestion()
+        questionLabel.text = String(question.getNumber()) + "/" + String(qHandler.questionCount) + " " + question.getQuestion()
         
-        aButton.setTitle("A) " + options["A"]!, forState: .Normal)
-        bButton.setTitle("B) " + options["B"]!, forState: .Normal)
-        cButton.setTitle("C) " + options["C"]!, forState: .Normal)
-        dButton.setTitle("D) " + options["D"]!, forState: .Normal)
+        aButton.setTitle("A). " + options["A"]!, forState: .Normal)
+        bButton.setTitle("B). " + options["B"]!, forState: .Normal)
+        cButton.setTitle("C). " + options["C"]!, forState: .Normal)
+        dButton.setTitle("D). " + options["D"]!, forState: .Normal)
         
     }
     
     func playQuiz() {
-        
+        correctCount = 0
         answered = false
         answerImage.hidden = true
         
@@ -152,7 +191,5 @@ class SingleQuizViewController: UIViewController {
         questionCount = 0
         setQuestion(qHandler.questionArray[0])
     }
-    
-    
     
 }
