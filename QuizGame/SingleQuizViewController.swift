@@ -19,6 +19,8 @@ class SingleQuizViewController: UIViewController {
     @IBOutlet weak var cButton: UIButton!
     @IBOutlet weak var dButton: UIButton!
     
+    var buttonColor: UIColor!
+    var selectedColor: UIColor!
     
     var qHandler: QuestionHandler!
     var currentQuestion: Question!
@@ -36,6 +38,9 @@ class SingleQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = qHandler.topic
+        
+        buttonColor = dButton.backgroundColor
+        selectedColor = UIColor.greenColor()
         playQuiz()
     }
     
@@ -64,6 +69,7 @@ class SingleQuizViewController: UIViewController {
                 break
             }
             answered = true
+            sender.backgroundColor = selectedColor
         } else {
             switch sender.tag {
             case 0 :
@@ -72,6 +78,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
+                    sender.backgroundColor = buttonColor
                 }
                 answerImage.image = UIImage(named: "aIcon")
                 break
@@ -81,6 +88,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
+                    sender.backgroundColor = buttonColor
                 }
                 answerImage.image = UIImage(named: "bIcon")
                 break
@@ -90,6 +98,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
+                    sender.backgroundColor = buttonColor
                 }
                 answerImage.image = UIImage(named: "cIcon")
                 break
@@ -99,6 +108,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
+                    sender.backgroundColor = buttonColor
                 }
                 answerImage.image = UIImage(named: "dIcon")
                 break
