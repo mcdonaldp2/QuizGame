@@ -78,7 +78,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
-                    sender.backgroundColor = buttonColor
+                    resetButtonColor()
                 }
                 answerImage.image = UIImage(named: "aIcon")
                 break
@@ -88,7 +88,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
-                    sender.backgroundColor = buttonColor
+                    resetButtonColor()
                 }
                 answerImage.image = UIImage(named: "bIcon")
                 break
@@ -98,7 +98,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
-                    sender.backgroundColor = buttonColor
+                    resetButtonColor()
                 }
                 answerImage.image = UIImage(named: "cIcon")
                 break
@@ -108,7 +108,7 @@ class SingleQuizViewController: UIViewController {
                     checkAnswer()
                 }else {
                     answered = false
-                    sender.backgroundColor = buttonColor
+                    resetButtonColor()
                 }
                 answerImage.image = UIImage(named: "dIcon")
                 break
@@ -129,6 +129,13 @@ class SingleQuizViewController: UIViewController {
         timerLabel.text = String(timerCount)
     }
     
+    func resetButtonColor(){
+        aButton.backgroundColor = buttonColor
+        bButton.backgroundColor = buttonColor
+        cButton.backgroundColor = buttonColor
+        dButton.backgroundColor = buttonColor
+    }
+    
     func checkAnswer() {
         questionTimer.invalidate()
        
@@ -147,6 +154,7 @@ class SingleQuizViewController: UIViewController {
     }
     
     func nextQuestion(){
+        resetButtonColor()
         questionCount = questionCount + 1
         
         
@@ -191,7 +199,9 @@ class SingleQuizViewController: UIViewController {
     }
     
     func playQuiz() {
+        resetButtonColor()
         correctCount = 0
+        self.navigationItem.rightBarButtonItem!.title = "Score: 0"
         answered = false
         answerImage.hidden = true
         
