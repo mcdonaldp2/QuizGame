@@ -42,9 +42,19 @@ class SingleQuizViewController: UIViewController {
         
         buttonColor = dButton.backgroundColor
         selectedColor = UIColor.greenColor()
+        
+        autoSizeButtonText(aButton)
+        autoSizeButtonText(bButton)
+        autoSizeButtonText(cButton)
+        autoSizeButtonText(dButton)
+        
         playQuiz()
     }
     
+    func autoSizeButtonText(button: UIButton) {
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.minimumScaleFactor = 0.02
+    }
     @IBAction func answerAction(sender: UIButton) {
         answerImage.hidden = false
         if submitted != true {
@@ -76,6 +86,7 @@ class SingleQuizViewController: UIViewController {
                 case 0 :
                     let secondClick = "A"
                     if secondClick == answer {
+                        sender.backgroundColor = UIColor.grayColor()
                         checkAnswer()
                     }else {
                         answered = true
@@ -88,6 +99,7 @@ class SingleQuizViewController: UIViewController {
                 case 1 :
                     let secondClick = "B"
                     if secondClick == answer {
+                        sender.backgroundColor = UIColor.grayColor()
                         checkAnswer()
                     }else {
                         answered = true
@@ -100,6 +112,7 @@ class SingleQuizViewController: UIViewController {
                 case 2 :
                     let secondClick = "C"
                     if secondClick == answer {
+                        sender.backgroundColor = UIColor.grayColor()
                         checkAnswer()
                     }else {
                         answered = true
@@ -112,6 +125,7 @@ class SingleQuizViewController: UIViewController {
                 case 3:
                     let secondClick = "D"
                     if secondClick == answer {
+                        sender.backgroundColor = UIColor.grayColor()
                         checkAnswer()
                     }else {
                         answered = true
@@ -180,6 +194,8 @@ class SingleQuizViewController: UIViewController {
         }
         else {
             print("Quiz is over!")
+            questionTimer.invalidate()
+            nextQuestionTimer.invalidate()
             
             let gameOverAlert = UIAlertController(title: "Quiz Over!", message: "You got " + String(correctCount) + " out of " + String(qHandler.questionCount) + " correct. ", preferredStyle: UIAlertControllerStyle.Alert)
             

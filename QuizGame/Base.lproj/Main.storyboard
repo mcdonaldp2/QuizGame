@@ -454,6 +454,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="7yv-RW-dKK"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="A"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -467,6 +468,7 @@
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgE-On-vbY" userLabel="dButton">
                                 <rect key="frame" x="310" y="480" width="250" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="D"/>
                                 <connections>
                                     <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="y9F-Ob-mUM"/>
@@ -475,6 +477,7 @@
                             <button opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sf-PY-Gjb" userLabel="bButton">
                                 <rect key="frame" x="310" y="440" width="250" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="B"/>
                                 <connections>
                                     <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="ESO-SL-hj0"/>
@@ -489,6 +492,7 @@
                             <button opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wpq-5N-CA2" userLabel="cButton">
                                 <rect key="frame" x="40" y="480" width="250" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="C"/>
                                 <connections>
                                     <action selector="answerAction:" destination="CXf-H9-KBP" eventType="touchUpInside" id="Lyt-SE-5LN"/>
