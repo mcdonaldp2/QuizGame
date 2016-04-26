@@ -46,6 +46,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     var timerCount = 20
     var questionTimer: NSTimer!
     
+    var youWereCorrect: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -138,7 +140,10 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     func checkAnswer(playerAnswer: String) {
         if playerAnswer == correctAnswer {
+            youWereCorrect = true
             pManager.incrementPlayerScore(peerID.displayName)
+        } else {
+            youWereCorrect = false
         }
     }
     
@@ -199,6 +204,13 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             timerCount == 20
             updatePlayerAnswersUI()
             updateScoreLabels()
+            
+            if youWereCorrect == true {
+                timerLabel.text = "Correct!"
+            } else {
+                timerLabel.text = "Wrong!"
+            }
+            
             _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
         }
         
@@ -218,6 +230,27 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
         } else {
             print("game over")
+            
+            var score1 = Int(pManager.players[peerID.displayName]!.score)
+            var winner = pManager.getWinner()
+            if (peerID.displayName == winner) {
+                winner = "You won!"
+            } else {
+                winner = "You lost!"
+            }
+            
+            let gameOverAlert = UIAlertController(title: winner, message: "You got \(score1)/\(qHandler.questionCount)", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            gameOverAlert.addAction(UIAlertAction(title: "Back To Menu", style: .Default, handler: { (action: UIAlertAction!) in
+                self.session.disconnect()
+                self.performSegueWithIdentifier("unwindToMenu", sender: nil)
+            }))
+            
+            gameOverAlert.addAction(UIAlertAction(title: "Replay Quiz", style: .Default, handler: { (action: UIAlertAction!) in
+                //self.playQuiz()
+            }))
+            
+            presentViewController(gameOverAlert, animated: true, completion: nil)
         }
     }
     

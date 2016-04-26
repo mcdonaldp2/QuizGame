@@ -418,9 +418,11 @@
                         <outletCollection property="scoreLabels" destination="v0k-7N-Cnm" collectionClass="NSMutableArray" id="rCC-tr-n4L"/>
                         <outletCollection property="scoreLabels" destination="di7-es-ixp" collectionClass="NSMutableArray" id="vTi-Gf-HyE"/>
                         <outletCollection property="scoreLabels" destination="kRI-Ko-CWi" collectionClass="NSMutableArray" id="S3Y-ay-fjB"/>
+                        <segue destination="wNO-d4-mrk" kind="unwind" identifier="unwindToMenu" unwindAction="unwindToMenu:" id="9I8-L1-DyB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sz8-WC-qR4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="wNO-d4-mrk" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1377" y="1227"/>
         </scene>
