@@ -31,6 +31,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     var answersArray = [String]()
     var selectedAnswer = "N/A"
+    var selectedButton = 0
+    var origButtonColor: UIColor!
     
     //Handles players answer/scores
     var pManager = playerManager()
@@ -81,6 +83,11 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         session.delegate = self
         browser.delegate = self
         
+        aButton.tag = 1
+        bButton.tag = 2
+        cButton.tag = 3
+        dButton.tag = 4
+        origButtonColor = aButton.backgroundColor
         
         questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
     }
@@ -92,33 +99,72 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     @IBAction func sendAnswer(sender: UIButton) {
         
-        //Determines what button is pressed
-        let a = sender.titleLabel!.text
-        let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
-        print("Letter: \(letter!)")
-        print("Peers: \(session.connectedPeers.count)")
-        selectedAnswer = letter!
         
-        //updates current players answer after selection
-        checkAnswer(letter!)
-        pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
-        pManager.printPlayers()
-        
-        //dictionary that holds player values
-        let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+        if sender.backgroundColor != UIColor.greenColor() {
+            sender.backgroundColor = UIColor.greenColor()
+            reverseButtonColor(selectedButton)
+            selectedButton = sender.tag
+            
+        } else {
+            //Determines what button is pressed
+            sender.backgroundColor = UIColor.lightGrayColor()
+            let a = sender.titleLabel!.text
+            let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
+            print("Letter: \(letter!)")
+            print("Peers: \(session.connectedPeers.count)")
+            selectedAnswer = letter!
+            
+            //updates current players answer after selection
+            checkAnswer(letter!)
+            pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
+            pManager.printPlayers()
+            
+            //dictionary that holds player values
+            let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+            
+            let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+            
+            do{
+                //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+                try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+                
+                
+            }
+            catch let err
+            {
+                print("Error in sending data \(err)")
+            }
 
-        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+        }
         
-        do{
-            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
-            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
-            
-            
-        }
-        catch let err
-        {
-            print("Error in sending data \(err)")
-        }
+        
+//        //Determines what button is pressed
+//        let a = sender.titleLabel!.text
+//        let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
+//        print("Letter: \(letter!)")
+//        print("Peers: \(session.connectedPeers.count)")
+//        selectedAnswer = letter!
+//        
+//        //updates current players answer after selection
+//        checkAnswer(letter!)
+//        pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
+//        pManager.printPlayers()
+//        
+//        //dictionary that holds player values
+//        let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+//
+//        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+//        
+//        do{
+//            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+//            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+//            
+//            
+//        }
+//        catch let err
+//        {
+//            print("Error in sending data \(err)")
+//        }
 
     }
 
@@ -227,6 +273,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             timerLabel.text = String(timerCount)
             correctAnswer = qHandler.questionArray[questionNumber].correctOption
             setQuestion(qHandler.questionArray[questionNumber])
+            reverseButtonColor(selectedButton)
+            selectedButton = 0
             questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
         } else {
             print("game over")
@@ -275,7 +323,19 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     }
     
     
-    
+    func reverseButtonColor(tag: Int) {
+        if tag == 1 {
+            aButton.backgroundColor = origButtonColor
+        } else if tag == 2 {
+            bButton.backgroundColor = origButtonColor
+        } else if tag == 3 {
+            cButton.backgroundColor = origButtonColor
+        } else if tag == 4 {
+            dButton.backgroundColor = origButtonColor
+        } else {
+            print("nothing needs to be changed")
+        }
+    }
     
     
     

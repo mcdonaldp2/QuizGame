@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "QuizGame/QuizViewController.swift"
-            timestampString = "483326383.444042"
+            timestampString = "483376155.84503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "QuizViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -32,22 +32,6 @@
             startingLineNumber = "34"
             endingLineNumber = "34"
             landmarkName = "incrementPlayerScore(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "QuizGame/QuizViewController.swift"
-            timestampString = "483326383.444042"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "sendAnswer(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
