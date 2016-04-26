@@ -195,7 +195,7 @@ class SingleQuizViewController: UIViewController {
         else {
             print("Quiz is over!")
             questionTimer.invalidate()
-            nextQuestionTimer.invalidate()
+           // nextQuestionTimer.invalidate()
             
             let gameOverAlert = UIAlertController(title: "Quiz Over!", message: "You got " + String(correctCount) + " out of " + String(qHandler.questionCount) + " correct. ", preferredStyle: UIAlertControllerStyle.Alert)
             
@@ -251,30 +251,30 @@ class SingleQuizViewController: UIViewController {
     }
     
     func randomAnswer() {
-        submitted = true
+        //submitted = false
         let randomAnswer = arc4random_uniform(4)
         
         switch randomAnswer {
         case 0:
             answer = "A"
+            answered = true
             resetButtonColor()
             aButton.backgroundColor = selectedColor
-            checkAnswer()
         case 1:
             answer = "B"
+            answered = true
             resetButtonColor()
             bButton.backgroundColor = selectedColor
-            checkAnswer()
         case 2:
             answer = "C"
+            answered = true
             resetButtonColor()
             cButton.backgroundColor = selectedColor
-            checkAnswer()
         case 3:
             answer = "D"
+            answered = true
             resetButtonColor()
             dButton.backgroundColor = selectedColor
-            checkAnswer()
         default:
             break
         }
