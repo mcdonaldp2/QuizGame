@@ -26,6 +26,7 @@ class SingleQuizViewController: UIViewController {
     var currentQuestion: Question!
     var questionCount: Int!
     
+    var nextQuestionTimer: NSTimer!
     var questionTimer: NSTimer!
     var timerCount: Int!
     
@@ -33,8 +34,6 @@ class SingleQuizViewController: UIViewController {
     var answered: Bool!
     var correctCount: Int!
     var submitted: Bool!
-    
-    var nextQuestionTimer: NSTimer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +54,7 @@ class SingleQuizViewController: UIViewController {
         button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.titleLabel?.minimumScaleFactor = 0.02
     }
+    
     @IBAction func answerAction(sender: UIButton) {
         answerImage.hidden = false
         if submitted != true {
