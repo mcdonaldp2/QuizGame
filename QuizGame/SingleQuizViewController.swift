@@ -32,6 +32,7 @@ class SingleQuizViewController: UIViewController {
     var answer: String!
     var answered: Bool!
     var correctCount: Int!
+    var submitted: Bool!
     
     var nextQuestionTimer: NSTimer!
     
@@ -46,76 +47,85 @@ class SingleQuizViewController: UIViewController {
     
     @IBAction func answerAction(sender: UIButton) {
         answerImage.hidden = false
-        
-        if answered != true {
-            switch sender.tag {
-            case 0 :
-                answer = "A"
-                answerImage.image = UIImage(named: "aIcon")
-                break
-            case 1 :
-                answer = "B"
-                answerImage.image = UIImage(named: "bIcon")
-                break
-            case 2 :
-                answer = "C"
-                answerImage.image = UIImage(named: "cIcon")
-                break
-            case 3:
-                answer = "D"
-                answerImage.image = UIImage(named: "dIcon")
-                break
-            default:
-                break
+        if submitted != true {
+            if answered != true {
+                switch sender.tag {
+                case 0 :
+                    answer = "A"
+                    answerImage.image = UIImage(named: "aIcon")
+                    break
+                case 1 :
+                    answer = "B"
+                    answerImage.image = UIImage(named: "bIcon")
+                    break
+                case 2 :
+                    answer = "C"
+                    answerImage.image = UIImage(named: "cIcon")
+                    break
+                case 3:
+                    answer = "D"
+                    answerImage.image = UIImage(named: "dIcon")
+                    break
+                default:
+                    break
             }
-            answered = true
-            sender.backgroundColor = selectedColor
-        } else {
-            switch sender.tag {
-            case 0 :
-                let secondClick = "A"
-                if secondClick == answer {
-                    checkAnswer()
-                }else {
-                    answered = false
-                    resetButtonColor()
+                answered = true
+                sender.backgroundColor = selectedColor
+            } else {
+                switch sender.tag {
+                case 0 :
+                    let secondClick = "A"
+                    if secondClick == answer {
+                        checkAnswer()
+                    }else {
+                        answered = true
+                        resetButtonColor()
+                        answer = secondClick
+                        sender.backgroundColor = selectedColor
+                    }
+                    answerImage.image = UIImage(named: "aIcon")
+                    break
+                case 1 :
+                    let secondClick = "B"
+                    if secondClick == answer {
+                        checkAnswer()
+                    }else {
+                        answered = true
+                        resetButtonColor()
+                        answer = secondClick
+                        sender.backgroundColor = selectedColor
+                    }
+                    answerImage.image = UIImage(named: "bIcon")
+                    break
+                case 2 :
+                    let secondClick = "C"
+                    if secondClick == answer {
+                        checkAnswer()
+                    }else {
+                        answered = true
+                        resetButtonColor()
+                        answer = secondClick
+                        sender.backgroundColor = selectedColor
                 }
-                answerImage.image = UIImage(named: "aIcon")
-                break
-            case 1 :
-                let secondClick = "B"
-                if secondClick == answer {
-                    checkAnswer()
-                }else {
-                    answered = false
-                    resetButtonColor()
+                    answerImage.image = UIImage(named: "cIcon")
+                    break
+                case 3:
+                    let secondClick = "D"
+                    if secondClick == answer {
+                        checkAnswer()
+                    }else {
+                        answered = true
+                        resetButtonColor()
+                        answer = secondClick
+                        sender.backgroundColor = selectedColor
+                    }
+                    answerImage.image = UIImage(named: "dIcon")
+                    break
+                default:
+                    break
                 }
-                answerImage.image = UIImage(named: "bIcon")
-                break
-            case 2 :
-                let secondClick = "C"
-                if secondClick == answer {
-                    checkAnswer()
-                }else {
-                    answered = false
-                    resetButtonColor()
-                }
-                answerImage.image = UIImage(named: "cIcon")
-                break
-            case 3:
-                let secondClick = "D"
-                if secondClick == answer {
-                    checkAnswer()
-                }else {
-                    answered = false
-                    resetButtonColor()
-                }
-                answerImage.image = UIImage(named: "dIcon")
-                break
-            default:
-                break
-            }
 
+            }
         }
     }
     
@@ -137,6 +147,7 @@ class SingleQuizViewController: UIViewController {
     }
     
     func checkAnswer() {
+        submitted = true
         questionTimer.invalidate()
        
         if currentQuestion.correctOption == answer {
@@ -148,7 +159,7 @@ class SingleQuizViewController: UIViewController {
         }
         
         if questionCount < qHandler.questionCount {
-        nextQuestionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("nextQuestion"), userInfo: nil, repeats: false)
+        nextQuestionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(SingleQuizViewController.nextQuestion), userInfo: nil, repeats: false)
         }
         
     }
@@ -157,11 +168,12 @@ class SingleQuizViewController: UIViewController {
         resetButtonColor()
         questionCount = questionCount + 1
         
+        submitted = false
         
         if questionCount < qHandler.questionCount {
             timerCount = 20
             timerLabel.text = String(timerCount)
-            questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("checkTime"), userInfo: nil, repeats: true)
+            questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(SingleQuizViewController.checkTime), userInfo: nil, repeats: true)
             setQuestion(qHandler.questionArray[questionCount])
             answered = false
             answerImage.hidden = true
@@ -200,16 +212,56 @@ class SingleQuizViewController: UIViewController {
     
     func playQuiz() {
         resetButtonColor()
+        questionTimer = nil
         correctCount = 0
         self.navigationItem.rightBarButtonItem!.title = "Score: 0"
+        
+        submitted = false
         answered = false
         answerImage.hidden = true
         
         timerCount = 20
         timerLabel.text = String(timerCount)
-        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("checkTime"), userInfo: nil, repeats: true)
+        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(SingleQuizViewController.checkTime), userInfo: nil, repeats: true)
         questionCount = 0
         setQuestion(qHandler.questionArray[0])
+    }
+    
+    override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
+        if motion == .MotionShake {
+            print("you shook the phone")
+            randomAnswer()
+        }
+    }
+    
+    func randomAnswer() {
+        submitted = true
+        let randomAnswer = arc4random_uniform(4)
+        
+        switch randomAnswer {
+        case 0:
+            answer = "A"
+            resetButtonColor()
+            aButton.backgroundColor = selectedColor
+            checkAnswer()
+        case 1:
+            answer = "B"
+            resetButtonColor()
+            bButton.backgroundColor = selectedColor
+            checkAnswer()
+        case 2:
+            answer = "C"
+            resetButtonColor()
+            cButton.backgroundColor = selectedColor
+            checkAnswer()
+        case 3:
+            answer = "D"
+            resetButtonColor()
+            dButton.backgroundColor = selectedColor
+            checkAnswer()
+        default:
+            break
+        }
     }
     
 }

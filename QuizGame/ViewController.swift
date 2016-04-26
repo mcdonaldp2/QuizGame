@@ -12,6 +12,7 @@ import MultipeerConnectivity
 class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessionDelegate, UINavigationControllerDelegate,  NSURLConnectionDelegate {
     
     var handler: QuestionHandler!
+    var quizNumber: Int!
 
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var singlePlayerButton: UIButton!
@@ -42,6 +43,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
         session.delegate = self
         browser.delegate = self
+        
+        quizNumber = 0
 
     }
     
@@ -61,6 +64,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     @IBAction func goToSinglePlayerQuiz(sender: UIButton) {
         performSegueWithIdentifier("singleQuizSegue", sender: self)
     }
+    
     @IBAction func goToMultiplayerQuiz(sender: UIButton) {
         performSegueWithIdentifier("quizSegue", sender: self)
     }
@@ -78,11 +82,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             }
         }
     }
-    
-    
-    //MARK - MCBrowserViewController functions
-    
-    
+   
     func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
         // Called when the browser view controller is dismissed
         
@@ -150,7 +150,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     }
     
     func beginConnection (){
-        let url_string : String = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz1.json"
+        quizNumber = quizNumber + 1
+        let url_string : String = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz" + String(quizNumber) + ".json"
         let url : NSURL = NSURL(string: url_string)!
         
         
@@ -170,8 +171,12 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
                     //print(json)
                     self.convertJSON(json)
                 }catch {
-                    print("Error with Json: \(error)")
+                    print("something went wrong")
                 }
+            } else {
+                print("quiz doesn't exist")
+                self.quizNumber = 0
+                self.beginConnection()
             }
         }
         
