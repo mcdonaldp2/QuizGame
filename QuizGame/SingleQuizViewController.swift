@@ -87,20 +87,48 @@ class SingleQuizViewController: UIViewController {
     
     func handleMotion(){
         if submitted != true {
-            if (rotX > 3) {
+            
+            if (rotX > 4) {
                 print("move down")
                 moveDown()
-            } else if (rotX < -3) {
+            } else if (rotX < -4) {
                 print("move up")
                 moveUp()
-            }else if (rotY > 3) {
+            }else if (rotY > 4) {
                 moveRight()
-            }else if (rotY < -3) {
+            }else if (rotY < -4) {
                 moveLeft()
-            } else if (rotZ > 3) {
+            } else if (rotZ > 4) {
                 moveLeft()
-            } else if (rotZ < -3) {
+            } else if (rotZ < -4) {
                 moveRight()
+            }
+        
+        if (accelZ > 2 || accelZ < -2) {
+            switch answer {
+            case "A":
+                aButton.backgroundColor = UIColor.grayColor()
+                submitted = true
+                checkAnswer()
+                break
+            case "B":
+                bButton.backgroundColor = UIColor.grayColor()
+                submitted = true
+                checkAnswer()
+                break
+            case "C":
+                cButton.backgroundColor = UIColor.grayColor()
+                submitted = true
+                checkAnswer()
+                break
+            case "D":
+                dButton.backgroundColor = UIColor.grayColor()
+                submitted = true
+                checkAnswer()
+                break
+            default:
+                break
+                }
             }
         }
     }
@@ -458,8 +486,6 @@ class SingleQuizViewController: UIViewController {
         }
     }
     
-    func motionUpdate(){
-        print(manager.gyroData)
-    }
+
     
 }
