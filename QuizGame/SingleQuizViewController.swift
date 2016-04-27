@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreMotion
 
 class SingleQuizViewController: UIViewController {
 
@@ -35,10 +36,24 @@ class SingleQuizViewController: UIViewController {
     var correctCount: Int!
     var submitted: Bool!
     
+    lazy var manager:CMMotionManager = {
+        let motion = CMMotionManager()
+        motion.accelerometerUpdateInterval = 0.2
+        motion.gyroUpdateInterval = 0.2
+        return motion
+    }()
+    
+    var rotX: Double = 0.0
+    var rotY: Double = 0.0
+    var rotZ: Double = 0.0
+    
+    var accelX: Double = 0.0
+    var accelY: Double = 0.0
+    var accelZ: Double = 0.0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = qHandler.topic
-        
         buttonColor = dButton.backgroundColor
         selectedColor = UIColor.greenColor()
         
@@ -47,7 +62,168 @@ class SingleQuizViewController: UIViewController {
         autoSizeButtonText(cButton)
         autoSizeButtonText(dButton)
         
+        
+        manager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!) { (accelerometerData: CMAccelerometerData?, NSError) -> Void in
+            
+            self.accelX = (accelerometerData?.acceleration.x)!
+            self.accelY = (accelerometerData?.acceleration.y)!
+            self.accelZ = (accelerometerData?.acceleration.z)!
+            
+        }
+        
+        manager.startGyroUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler: { (gyroData: CMGyroData?, NSError) -> Void in
+            
+            self.rotX = (gyroData?.rotationRate.x)!
+            self.rotY = (gyroData?.rotationRate.y)!
+            self.rotZ = (gyroData?.rotationRate.z)!
+            
+            self.handleMotion()
+            
+            
+        })
+        
         playQuiz()
+    }
+    
+    func handleMotion(){
+        if submitted != true {
+            if (rotX > 3) {
+                print("move down")
+                moveDown()
+            } else if (rotX < -3) {
+                print("move up")
+                moveUp()
+            }else if (rotY > 3) {
+                moveRight()
+            }else if (rotY < -3) {
+                moveLeft()
+            } else if (rotZ > 3) {
+                moveLeft()
+            } else if (rotZ < -3) {
+                moveRight()
+            }
+        }
+    }
+    
+    func moveUp(){
+        switch answer  {
+            case "A":
+                break
+            case "B":
+                break
+            case "C":
+                answer = "A"
+                answerImage.image = UIImage(named: "aIcon")
+                resetButtonColor()
+                aButton.backgroundColor = selectedColor
+                answered = true
+                break
+            case "D":
+                answer = "B"
+                answerImage.image = UIImage(named: "bIcon")
+                resetButtonColor()
+                bButton.backgroundColor = selectedColor
+                answered = true
+            default:
+                answer = "A"
+                answerImage.image = UIImage(named: "aIcon")
+                aButton.backgroundColor = selectedColor
+                answered = true
+                break
+        }
+        answerImage.hidden = false
+    }
+    
+    func moveDown(){
+        switch answer  {
+        case "A":
+            answer = "C"
+            answerImage.image = UIImage(named: "cIcon")
+            resetButtonColor()
+            cButton.backgroundColor = selectedColor
+            answered = true
+            break
+        case "B":
+            answer = "D"
+            answerImage.image = UIImage(named: "dIcon")
+            resetButtonColor()
+            dButton.backgroundColor = selectedColor
+            answered = true
+            break
+        case "C":
+            break
+        case "D":
+            break
+        default:
+            answer = "A"
+            answerImage.image = UIImage(named: "aIcon")
+            aButton.backgroundColor = selectedColor
+            answered = true
+            break
+
+        }
+        answerImage.hidden = false
+    }
+    
+    func moveLeft(){
+        switch answer  {
+        case "A":
+            break
+        case "B":
+            answer = "A"
+            answerImage.image = UIImage(named: "aIcon")
+            resetButtonColor()
+            aButton.backgroundColor = selectedColor
+            answered = true
+            break
+        case "C":
+            break
+        case "D":
+            answer = "C"
+            answerImage.image = UIImage(named: "cIcon")
+            resetButtonColor()
+            cButton.backgroundColor = selectedColor
+            answered = true
+            break
+        default:
+            answer = "A"
+            answerImage.image = UIImage(named: "aIcon")
+            aButton.backgroundColor = selectedColor
+            answered = true
+            break
+        }
+        answerImage.hidden = false
+    }
+    
+    func moveRight(){
+        switch answer  {
+        case "A":
+            answer = "B"
+            answerImage.image = UIImage(named: "bIcon")
+            resetButtonColor()
+            bButton.backgroundColor = selectedColor
+            answered = true
+            break
+        case "B":
+            break
+        case "C":
+            answer = "D"
+            answerImage.image = UIImage(named: "dIcon")
+            resetButtonColor()
+            dButton.backgroundColor = selectedColor
+            answered = true
+            break
+        case "D":
+            break
+        default:
+            answer = "A"
+            answerImage.image = UIImage(named: "aIcon")
+            aButton.backgroundColor = selectedColor
+            answered = true
+            break
+
+        }
+        answerImage.hidden = false
     }
     
     func autoSizeButtonText(button: UIButton) {
@@ -230,6 +406,7 @@ class SingleQuizViewController: UIViewController {
         resetButtonColor()
         questionTimer = nil
         correctCount = 0
+        answer = "Z"
         self.navigationItem.rightBarButtonItem!.title = "Score: 0"
         
         submitted = false
@@ -241,6 +418,7 @@ class SingleQuizViewController: UIViewController {
         questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(SingleQuizViewController.checkTime), userInfo: nil, repeats: true)
         questionCount = 0
         setQuestion(qHandler.questionArray[0])
+        
     }
     
     override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
@@ -278,6 +456,10 @@ class SingleQuizViewController: UIViewController {
         default:
             break
         }
+    }
+    
+    func motionUpdate(){
+        print(manager.gyroData)
     }
     
 }
