@@ -18,8 +18,11 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     @IBOutlet weak var cButton: UIButton!
     @IBOutlet weak var dButton: UIButton!
     
+    @IBOutlet var playerImages: [UIImageView]!
     @IBOutlet var answerImages: [UIImageView]!
     @IBOutlet var scoreLabels: [UILabel]!
+    
+    var gameOverAlert: UIAlertController!
     
     var session: MCSession!
     var peerID: MCPeerID!
@@ -30,30 +33,54 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     let serviceType = "g2-QuizGame"
     
     var answersArray = [String]()
-    var selectedAnswer: String?
+    var selectedAnswer = "N/A"
+    var selectedButton = 0
+    var origButtonColor: UIColor!
     
     //Handles players answer/scores
     var pManager = playerManager()
     var qHandler: QuestionHandler!
+    var qHandlerArray: [QuestionHandler]!
+    var quizCount: Int!
     
+    var currentQuestion: Question!
     var questionTotal: Int!
-    var questionNumber = 1
+    var questionNumber = 0
     var question: String!
     var correctAnswer: String!
     var options = [String : String]()
+    
+    var timerCount = 20
+    var questionTimer: NSTimer!
+    
+    var youWereCorrect: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        quizCount = -1
+        quizCount = quizCount + 1
         
+        if (quizCount < qHandlerArray.count) {
+            qHandler = qHandlerArray[quizCount]
+        } else  {
+            quizCount = 0
+            qHandler = qHandlerArray[quizCount]
+        }
+
         self.peerID = MCPeerID(displayName: UIDevice.currentDevice().name)
         //self.session = MCSession(peer: peerID)
+        
+        print("answerImages count: \(answerImages.count)")
+        print("scoreLabels count: \(scoreLabels.count)")
         
         pManager.addPlayer(peerID.displayName)
         addConnectedPlayers()
         print("checking for totalPlayers")
+        print("total players: \(pManager.players.count)")
         pManager.printPlayers()
+        hideUI(pManager.players.count)
         
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
 //        assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
@@ -65,9 +92,19 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         correctAnswer = qHandler.questionArray[0].correctOption
         options = qHandler.questionArray[0].options
         
+        setQuestion(qHandler.questionArray[questionNumber])
+        
         
         session.delegate = self
         browser.delegate = self
+        
+        aButton.tag = 1
+        bButton.tag = 2
+        cButton.tag = 3
+        dButton.tag = 4
+        origButtonColor = aButton.backgroundColor
+        
+        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,33 +114,95 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     @IBAction func sendAnswer(sender: UIButton) {
         
-        //Determines what button is pressed
-        let a = sender.titleLabel!.text
-        let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
-        print("Letter: \(letter!)")
-        print("Peers: \(session.connectedPeers.count)")
-        //selectedAnswer = letter!
         
-        //updates current players answer after selection
-        checkAnswer(letter!)
-        pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
-        pManager.printPlayers()
-        
-        //dictionary that holds player values
-        let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+        if sender.backgroundColor != UIColor.greenColor() {
+            sender.backgroundColor = UIColor.greenColor()
+            reverseButtonColor(selectedButton)
+            selectedButton = sender.tag
+            
+        } else {
+            
+            //Determines what button is pressed
+            sender.backgroundColor = UIColor.lightGrayColor()
+            let a = sender.titleLabel!.text
+            let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
+            print("Letter: \(letter!)")
+            print("Peers: \(session.connectedPeers.count)")
+            selectedAnswer = letter!
+            
+            //Presents players own answer
+            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+            answerImages[0].image = image
 
-        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+            
+            
+            //updates current players answer after selection
+            checkAnswer(letter!)
+            pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
+            pManager.printPlayers()
+            
+            //dictionary that holds player values
+            let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+            
+            let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+            
+            do{
+                //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+                try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+                
+                
+            }
+            catch let err
+            {
+                print("Error in sending data \(err)")
+            }
+            
+            if (self.pManager.allPlayersAnswered() == true) {
+                self.questionTimer.invalidate()
+                self.timerCount == 20
+                //self.updatePlayerAnswersUI()
+                self.updateScoreLabels()
+                
+                if self.youWereCorrect == true {
+                    self.timerLabel.text = "Correct!"
+                } else {
+                    self.timerLabel.text = "Wrong!"
+                }
+                
+                _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+            }
+
+
+        }
         
-        do{
-            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
-            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
-            
-            
-        }
-        catch let err
-        {
-            print("Error in sending data \(err)")
-        }
+        
+//        //Determines what button is pressed
+//        let a = sender.titleLabel!.text
+//        let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
+//        print("Letter: \(letter!)")
+//        print("Peers: \(session.connectedPeers.count)")
+//        selectedAnswer = letter!
+//        
+//        //updates current players answer after selection
+//        checkAnswer(letter!)
+//        pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
+//        pManager.printPlayers()
+//        
+//        //dictionary that holds player values
+//        let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
+//
+//        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+//        
+//        do{
+//            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+//            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+//            
+//            
+//        }
+//        catch let err
+//        {
+//            print("Error in sending data \(err)")
+//        }
 
     }
 
@@ -125,9 +224,232 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     func checkAnswer(playerAnswer: String) {
         if playerAnswer == correctAnswer {
+            youWereCorrect = true
             pManager.incrementPlayerScore(peerID.displayName)
+        } else {
+            youWereCorrect = false
         }
     }
+    
+//    func updatePlayerAnswersUI() {
+//        if (getAnswerImageName(selectedAnswer) != "something went wrong") {
+//            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+//            answerImages[0].image = image
+//            //answerImages[0].frame = CGRectMake(0,0,100,200)
+//        }
+//        
+//        var count = 1
+//        for (playerName, playerValues) in pManager.players {
+//            if (playerName != peerID.displayName) && getAnswerImageName(playerValues.currentAnswer) != "something went wrong"{
+//                var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer))!
+//                answerImages[count].image = image
+//                //answerImages[0].frame = CGRectMake(0,0,100,200)
+//            }
+//            count += 1
+//        }
+//    }
+    
+    func getAnswerImageName(answer: String) -> String {
+        if (answer == "A") {
+            return "aIcon"
+        } else if (answer == "B") {
+            return "bIcon"
+        } else if (answer == "C") {
+            return "cIcon"
+        } else if (answer == "D") {
+            return "dIcon"
+        }
+        
+        return "something went wrong"
+    }
+    
+    func updateScoreLabels() {
+        //print("my score: \(pManager.players[peerID.displayName]!.score)")
+        self.scoreLabels[0].text = String(pManager.players[peerID.displayName]!.score)
+        var count = 1
+        for (playerName, playerValues) in pManager.players {
+            if (playerName != peerID.displayName) {
+                //var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
+                self.scoreLabels[count].text = String(playerValues.score)
+                //answerImages[0].frame = CGRectMake(0,0,100,200)
+            }
+            count += 1
+        }
+
+    }
+    
+    func countDown() {
+        timerCount -= 1
+        
+        timerLabel.text = "\(timerCount)"
+        
+        if timerCount == 0 {
+            questionTimer.invalidate()
+            timerCount == 20
+            //updatePlayerAnswersUI()
+            updateScoreLabels()
+            
+            if youWereCorrect == true {
+                timerLabel.text = "Correct!"
+            } else {
+                timerLabel.text = "Wrong!"
+            }
+            
+            _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+        }
+        
+        
+    }
+    
+    func nextQuestion() {
+        questionNumber += 1
+        
+        
+        if questionNumber < qHandler.questionCount {
+            hideAnswers()
+            pManager.resetCurrentAnswers()
+            timerCount = 20
+            timerLabel.text = String(timerCount)
+            correctAnswer = qHandler.questionArray[questionNumber].correctOption
+            setQuestion(qHandler.questionArray[questionNumber])
+            reverseButtonColor(selectedButton)
+            selectedButton = 0
+            questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
+        } else {
+            print("game over")
+            
+            var score1 = Int(pManager.players[peerID.displayName]!.score)
+            var winner = pManager.getWinner()
+            if (peerID.displayName == winner) {
+                winner = "You won!"
+            } else {
+                winner = "You lost!"
+            }
+            
+            gameOverAlert = UIAlertController(title: winner, message: "You got \(score1)/\(qHandler.questionCount)", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            gameOverAlert.addAction(UIAlertAction(title: "Back To Menu", style: .Default, handler: { (action: UIAlertAction!) in
+                self.session.disconnect()
+                self.performSegueWithIdentifier("unwindToMenu", sender: nil)
+            }))
+            
+            gameOverAlert.addAction(UIAlertAction(title: "Replay Quiz", style: .Default, handler: { (action: UIAlertAction!) in
+                self.resetScoreLabels()
+                self.restartPeersQuiz()
+                self.playQuiz()
+            }))
+            
+            presentViewController(gameOverAlert, animated: true, completion: nil)
+        }
+    }
+    
+    func setQuestion(question: Question) {
+        // nextQuestionTimer.invalidate()
+        currentQuestion = question
+        var options = question.getOptions()
+        
+        questionLabel.text = String(question.getNumber()) + "/" + String(qHandler.questionCount) + " " + question.getQuestion()
+        
+        aButton.setTitle("A). " + options["A"]!, forState: .Normal)
+        bButton.setTitle("B). " + options["B"]!, forState: .Normal)
+        cButton.setTitle("C). " + options["C"]!, forState: .Normal)
+        dButton.setTitle("D). " + options["D"]!, forState: .Normal)
+        
+    }
+    
+    func playQuiz() {
+        hideAnswers()
+        pManager.resetPlayerValues()
+        quizCount = quizCount + 1
+        
+        if (quizCount < qHandlerArray.count) {
+            qHandler = qHandlerArray[quizCount]
+        } else  {
+            quizCount = 0
+            qHandler = qHandlerArray[quizCount]
+        }
+        
+        self.navigationItem.title = qHandler.topic
+        reverseButtonColor(selectedButton)
+        
+        questionTimer = nil
+        questionTotal = qHandler.questionCount
+        question = qHandler.questionArray[0].questionSentence
+        correctAnswer = qHandler.questionArray[0].correctOption
+        options = qHandler.questionArray[0].options
+        
+        
+        
+        
+        timerCount = 20
+        timerLabel.text = String(timerCount)
+        questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
+        questionNumber = 0
+        setQuestion(qHandler.questionArray[0])
+        
+    }
+
+    
+    func hideAnswers() {
+        for image in answerImages {
+            image.image = nil
+        }
+    }
+    
+    
+    func reverseButtonColor(tag: Int) {
+        if tag == 1 {
+            aButton.backgroundColor = origButtonColor
+        } else if tag == 2 {
+            bButton.backgroundColor = origButtonColor
+        } else if tag == 3 {
+            cButton.backgroundColor = origButtonColor
+        } else if tag == 4 {
+            dButton.backgroundColor = origButtonColor
+        } else {
+            print("nothing needs to be changed")
+        }
+    }
+    
+    func hideUI(indexHide: Int) {
+        var index = indexHide
+        while index < 4 {
+            playerImages[index].image = UIImage(named: "noPlayerIcon")
+            scoreLabels[index].text = ""
+            
+            index += 1
+        }
+        
+        
+    }
+    
+    func resetScoreLabels() {
+        for label in scoreLabels {
+            label.text = "0"
+        }
+    }
+    
+    
+    func restartPeersQuiz() {
+        let dataToSend = "restart"
+        
+        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+        
+        do{
+            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+            
+            
+        }
+        catch let err
+        {
+            print("Error in sending data \(err)")
+        }
+
+    }
+    
+    
+    
     
     //MARK - MCBrowserViewController functions
     
@@ -174,6 +496,33 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
                 print("\(playerId) \(playerAnswer) \(playerScore)")
                 self.pManager.printPlayers()
                 
+                let index = self.pManager.findPlayerIndex(playerId)
+                let image: UIImage = UIImage(named: self.getAnswerImageName(playerAnswer))!
+                self.answerImages[index].image = image
+                
+                if (self.pManager.allPlayersAnswered() == true) {
+                    self.questionTimer.invalidate()
+                    self.timerCount == 20
+                    //self.updatePlayerAnswersUI()
+                    self.updateScoreLabels()
+                    
+                    if self.youWereCorrect == true {
+                        self.timerLabel.text = "Correct!"
+                    } else {
+                        self.timerLabel.text = "Wrong!"
+                    }
+                    
+                    _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+                }
+                
+            } else {
+                
+                if let restart = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String {
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                    self.resetScoreLabels()
+                    self.restartPeersQuiz()
+                    self.playQuiz()
+                }
             }
             
         })

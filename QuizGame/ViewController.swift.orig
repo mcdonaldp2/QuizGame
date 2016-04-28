@@ -45,17 +45,15 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
         session.delegate = self
         browser.delegate = self
-	browser.maximumNumberOfPeers = 4
-
         
+<<<<<<< HEAD
         quizNumber = 0
         handlerArray = []
         beginConnection()
+=======
+        browser.maximumNumberOfPeers = 4
+>>>>>>> multiplayerFeatureBranch
 
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        beginConnection()
     }
     
     override func didReceiveMemoryWarning() {
@@ -95,7 +93,6 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             if let destination = segue.destinationViewController as? QuizViewController {
                 destination.session = session as MCSession
                 destination.qHandler = handler as QuestionHandler
-                destination.qHandlerArray = handlerArray as [QuestionHandler]
             }
             
         } else if segue.identifier == "singleQuizSegue" {
@@ -227,6 +224,11 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         handlerArray.append(handler)
     }
     
+<<<<<<< HEAD
+=======
+    
+    
+>>>>>>> multiplayerFeatureBranch
     @IBAction func unwindToMenu(segue: UIStoryboardSegue){}
     
 }

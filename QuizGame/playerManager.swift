@@ -11,6 +11,7 @@ import Foundation
 class playerManager {
     
     var players = [String: PlayerValues]()
+    var playersArray = [String]()
     
     init() {
         
@@ -18,6 +19,7 @@ class playerManager {
     
     func addPlayer(playerId: String) {
         players[playerId] = PlayerValues()
+        playersArray.append(playerId)
     }
     
     func updatePlayerInfo(playerId: String, playerValues: PlayerValues) {
@@ -34,6 +36,23 @@ class playerManager {
         print("\(playerId) score: \(players[playerId]!.score)")
     }
     
+    func resetCurrentAnswers() {
+        for (playerId, playerVals) in players {
+            playerVals.currentAnswer = "N/A"
+        }
+    }
+    
+    func allPlayersAnswered() -> Bool {
+        var allAnswered = true
+        for (_, playerValues) in players {
+            if playerValues.currentAnswer == "N/A" {
+                allAnswered = false
+            }
+        }
+        
+        return allAnswered 
+    }
+    
     
     func getWinner() -> String {
         var highscore = 0
@@ -48,10 +67,31 @@ class playerManager {
         return winningPlayer!
     }
     
+    func findPlayerIndex(playerId: String) -> Int {
+        var found = false
+        var index = 1
+        
+        repeat {
+            if playersArray[index] == playerId {
+                found = true
+            } else {
+                index += 1
+            }
+        } while (!found && index < playersArray.count)
+        
+        return index
+    }
+    
+    func resetPlayerValues() {
+        for (_, playerVals) in players {
+            playerVals.currentAnswer = "N/A"
+            playerVals.score = 0
+        }
+    }
     
     func printPlayers() {
         for (playerId, _ ) in players {
-            print("player: \(playerId) Answer: \(players[playerId]!.currentAnswer!) Score: \(players[playerId]!.score)")
+            print("player: \(playerId) Answer: \(players[playerId]!.currentAnswer) Score: \(players[playerId]!.score)")
         }
     }
     
@@ -59,7 +99,7 @@ class playerManager {
     
     //Helper class to hold letter answers/scores
     class PlayerValues {
-        var currentAnswer: String?
+        var currentAnswer = "N/A"
         var score: Int = 0
         
         init(answer: String, score: Int) {
