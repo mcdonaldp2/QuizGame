@@ -11,6 +11,7 @@ import MultipeerConnectivity
 
 class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessionDelegate, UINavigationControllerDelegate,  NSURLConnectionDelegate {
     
+    var handlerArray: [QuestionHandler]!
     var handler: QuestionHandler!
     var quizNumber: Int!
 
@@ -45,13 +46,11 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         browser.delegate = self
         
         quizNumber = 0
+        handlerArray = []
+        beginConnection()
 
     }
     
-    override func viewDidAppear(animated: Bool) {
-        beginConnection()
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -78,7 +77,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             
         } else if segue.identifier == "singleQuizSegue" {
             if let destination = segue.destinationViewController as? SingleQuizViewController {
-                destination.qHandler = handler as QuestionHandler
+                //destination.qHandler = handler as QuestionHandler
+                destination.qHandlerArray = handlerArray as [QuestionHandler]
             }
         }
     }
@@ -170,13 +170,14 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
                     let json = try NSJSONSerialization.JSONObjectWithData(data!, options:.AllowFragments)
                     //print(json)
                     self.convertJSON(json)
+                    self.beginConnection()
                 }catch {
                     print("something went wrong")
                 }
             } else {
-                print("quiz doesn't exist")
-                self.quizNumber = 0
-                self.beginConnection()
+                print("done adding quizes!")
+                //print(self.handlerArray.count)
+                
             }
         }
         
@@ -205,7 +206,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             handler = QuestionHandler(array: questArray, questCount: questionCount, questTopic: topic)
             
         }
-        
+        handlerArray.append(handler)
     }
     
     @IBAction func unwindToMenu(segue: UIStoryboardSegue){}

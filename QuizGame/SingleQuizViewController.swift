@@ -23,6 +23,8 @@ class SingleQuizViewController: UIViewController {
     var buttonColor: UIColor!
     var selectedColor: UIColor!
     
+    var quizCount: Int!
+    var qHandlerArray: [QuestionHandler]!
     var qHandler: QuestionHandler!
     var currentQuestion: Question!
     var questionCount: Int!
@@ -51,9 +53,11 @@ class SingleQuizViewController: UIViewController {
     var accelY: Double = 0.0
     var accelZ: Double = 0.0
     
+    var gameOverAlert: UIAlertController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = qHandler.topic
+       
         buttonColor = dButton.backgroundColor
         selectedColor = UIColor.greenColor()
         
@@ -64,10 +68,22 @@ class SingleQuizViewController: UIViewController {
         
         setUpMotion()
         
+        quizCount = -1
         playQuiz()
     }
     
     func playQuiz() {
+        
+        quizCount = quizCount + 1
+        
+        if (quizCount < qHandlerArray.count) {
+        qHandler = qHandlerArray[quizCount]
+        } else  {
+            quizCount = 0
+            qHandler = qHandlerArray[quizCount]
+        }
+        
+        self.navigationItem.title = qHandler.topic
         resetButtonColor()
         questionTimer = nil
         correctCount = 0
@@ -233,7 +249,7 @@ class SingleQuizViewController: UIViewController {
             questionTimer.invalidate()
            // nextQuestionTimer.invalidate()
             
-            let gameOverAlert = UIAlertController(title: "Quiz Over!", message: "You got " + String(correctCount) + " out of " + String(qHandler.questionCount) + " correct. ", preferredStyle: UIAlertControllerStyle.Alert)
+            gameOverAlert = UIAlertController(title: "Quiz Over!", message: "You got " + String(correctCount) + " out of " + String(qHandler.questionCount) + " correct. ", preferredStyle: UIAlertControllerStyle.Alert)
             
             gameOverAlert.addAction(UIAlertAction(title: "Back To Menu", style: .Default, handler: { (action: UIAlertAction!) in
                 self.performSegueWithIdentifier("unwindToMenu", sender: nil)
