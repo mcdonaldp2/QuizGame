@@ -11,6 +11,7 @@ import Foundation
 class playerManager {
     
     var players = [String: PlayerValues]()
+    var playersArray = [String]()
     
     init() {
         
@@ -18,6 +19,7 @@ class playerManager {
     
     func addPlayer(playerId: String) {
         players[playerId] = PlayerValues()
+        playersArray.append(playerId)
     }
     
     func updatePlayerInfo(playerId: String, playerValues: PlayerValues) {
@@ -40,6 +42,17 @@ class playerManager {
         }
     }
     
+    func allPlayersAnswered() -> Bool {
+        var allAnswered = true
+        for (_, playerValues) in players {
+            if playerValues.currentAnswer == "N/A" {
+                allAnswered = false
+            }
+        }
+        
+        return allAnswered 
+    }
+    
     
     func getWinner() -> String {
         var highscore = 0
@@ -52,6 +65,21 @@ class playerManager {
         }
         
         return winningPlayer!
+    }
+    
+    func findPlayerIndex(playerId: String) -> Int {
+        var found = false
+        var index = 1
+        
+        repeat {
+            if playersArray[index] == playerId {
+                found = true
+            } else {
+                index += 1
+            }
+        } while (!found && index < playersArray.count)
+        
+        return index
     }
     
     

@@ -18,6 +18,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     @IBOutlet weak var cButton: UIButton!
     @IBOutlet weak var dButton: UIButton!
     
+    @IBOutlet var playerImages: [UIImageView]!
     @IBOutlet var answerImages: [UIImageView]!
     @IBOutlet var scoreLabels: [UILabel]!
     
@@ -66,6 +67,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         print("checking for totalPlayers")
         print("total players: \(pManager.players.count)")
         pManager.printPlayers()
+        hideUI(pManager.players.count)
         
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
 //        assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
@@ -106,6 +108,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             selectedButton = sender.tag
             
         } else {
+            
             //Determines what button is pressed
             sender.backgroundColor = UIColor.lightGrayColor()
             let a = sender.titleLabel!.text
@@ -113,6 +116,12 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             print("Letter: \(letter!)")
             print("Peers: \(session.connectedPeers.count)")
             selectedAnswer = letter!
+            
+            //Presents players own answer
+            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+            answerImages[0].image = image
+
+            
             
             //updates current players answer after selection
             checkAnswer(letter!)
@@ -134,6 +143,22 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             {
                 print("Error in sending data \(err)")
             }
+            
+            if (self.pManager.allPlayersAnswered() == true) {
+                self.questionTimer.invalidate()
+                self.timerCount == 20
+                //self.updatePlayerAnswersUI()
+                self.updateScoreLabels()
+                
+                if self.youWereCorrect == true {
+                    self.timerLabel.text = "Correct!"
+                } else {
+                    self.timerLabel.text = "Wrong!"
+                }
+                
+                _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+            }
+
 
         }
         
@@ -193,23 +218,23 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         }
     }
     
-    func updatePlayerAnswersUI() {
-        if (getAnswerImageName(selectedAnswer) != "something went wrong") {
-            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
-            answerImages[0].image = image
-            //answerImages[0].frame = CGRectMake(0,0,100,200)
-        }
-        
-        var count = 1
-        for (playerName, playerValues) in pManager.players {
-            if (playerName != peerID.displayName) && getAnswerImageName(playerValues.currentAnswer) != "something went wrong"{
-                var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer))!
-                answerImages[count].image = image
-                //answerImages[0].frame = CGRectMake(0,0,100,200)
-            }
-            count += 1
-        }
-    }
+//    func updatePlayerAnswersUI() {
+//        if (getAnswerImageName(selectedAnswer) != "something went wrong") {
+//            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+//            answerImages[0].image = image
+//            //answerImages[0].frame = CGRectMake(0,0,100,200)
+//        }
+//        
+//        var count = 1
+//        for (playerName, playerValues) in pManager.players {
+//            if (playerName != peerID.displayName) && getAnswerImageName(playerValues.currentAnswer) != "something went wrong"{
+//                var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer))!
+//                answerImages[count].image = image
+//                //answerImages[0].frame = CGRectMake(0,0,100,200)
+//            }
+//            count += 1
+//        }
+//    }
     
     func getAnswerImageName(answer: String) -> String {
         if (answer == "A") {
@@ -248,7 +273,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         if timerCount == 0 {
             questionTimer.invalidate()
             timerCount == 20
-            updatePlayerAnswersUI()
+            //updatePlayerAnswersUI()
             updateScoreLabels()
             
             if youWereCorrect == true {
@@ -337,7 +362,17 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         }
     }
     
-    
+    func hideUI(indexHide: Int) {
+        var index = indexHide
+        while index < 4 {
+            playerImages[index].image = UIImage(named: "noPlayerIcon")
+            scoreLabels[index].text = ""
+            
+            index += 1
+        }
+        
+        
+    }
     
     
     
@@ -389,6 +424,25 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
                
                 print("\(playerId) \(playerAnswer) \(playerScore)")
                 self.pManager.printPlayers()
+                
+                let index = self.pManager.findPlayerIndex(playerId)
+                let image: UIImage = UIImage(named: self.getAnswerImageName(playerAnswer))!
+                self.answerImages[index].image = image
+                
+                if (self.pManager.allPlayersAnswered() == true) {
+                    self.questionTimer.invalidate()
+                    self.timerCount == 20
+                    //self.updatePlayerAnswersUI()
+                    self.updateScoreLabels()
+                    
+                    if self.youWereCorrect == true {
+                        self.timerLabel.text = "Correct!"
+                    } else {
+                        self.timerLabel.text = "Wrong!"
+                    }
+                    
+                    _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+                }
                 
             }
             
