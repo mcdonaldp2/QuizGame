@@ -42,8 +42,12 @@ class SingleQuizViewController: UIViewController {
         let motion = CMMotionManager()
         motion.accelerometerUpdateInterval = 0.2
         motion.gyroUpdateInterval = 0.2
+        motion.deviceMotionUpdateInterval = 0.2
         return motion
     }()
+    var initialized: Bool = false
+    var initialAttitude: CMAttitude!
+    var attitudeTimer: NSTimer!
     
     var rotX: Double = 0.0
     var rotY: Double = 0.0
@@ -70,6 +74,11 @@ class SingleQuizViewController: UIViewController {
         
         quizCount = -1
         playQuiz()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        print("the view is gone!")
+        manager.stopDeviceMotionUpdates()
     }
     
     func playQuiz() {
@@ -284,23 +293,36 @@ class SingleQuizViewController: UIViewController {
     //*******************************************
     
     func setUpMotion(){
-        manager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!) { (accelerometerData: CMAccelerometerData?, NSError) -> Void in
+      manager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!) { (accelerometerData: CMAccelerometerData?, NSError) -> Void in
             
-            self.accelX = (accelerometerData?.acceleration.x)!
-            self.accelY = (accelerometerData?.acceleration.y)!
-            self.accelZ = (accelerometerData?.acceleration.z)!
+         self.accelZ = (accelerometerData?.acceleration.z)!
             
         }
+        
         manager.startGyroUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler: { (gyroData: CMGyroData?, NSError) -> Void in
             
-            self.rotX = (gyroData?.rotationRate.x)!
-            self.rotY = (gyroData?.rotationRate.y)!
+    
             self.rotZ = (gyroData?.rotationRate.z)!
             
-            self.handleMotion()
             
             
         })
+        manager.startDeviceMotionUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler: { (data: CMDeviceMotion?, NSError) -> Void in
+            
+            if self.initialized == false {
+                self.initialAttitude = data?.attitude
+                self.initialized = true
+                //self.attitudeTimer = NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(SingleQuizViewController.updateAttitude), userInfo: nil, repeats: true)
+            }
+            
+            self.handleMotion((data?.attitude)!)
+            
+            
+        })
+    }
+    
+    func updateAttitude(){
+        initialAttitude = manager.deviceMotion?.attitude
     }
     
     override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
@@ -340,29 +362,28 @@ class SingleQuizViewController: UIViewController {
         }
     }
     
-    func handleMotion(){
-        if submitted != true {
-            
-            if (rotX > 4) {
-                moveDown()
-            } else if (rotX < -4) {
-                moveUp()
-            }else if (rotY > 4) {
-                moveRight()
-            }else if (rotY < -4) {
-                moveLeft()
-            } else if (rotZ > 4) {
-                moveLeft()
-            } else if (rotZ < -4) {
-                moveRight()
-            }
-            
-            if (accelZ > 2 || accelZ < -2) {
+    func handleMotion(attitude: CMAttitude){
+        
+        let roll = attitude.roll
+        let pitch = attitude.pitch
+        
+        if (roll > initialAttitude.roll + 0.75) {
+            moveRight()
+        } else if (roll < initialAttitude.roll - 0.75) {
+            moveLeft()
+        } else if (pitch > initialAttitude.pitch + 0.75) {
+            moveDown()
+        } else if (pitch < initialAttitude.pitch - 0.75) {
+            moveUp()
+        }
+        
+        if submitted == false {
+            if (accelZ > 2 || accelZ < -2) || (rotZ > 3 || rotZ < -3) {
                 switch answer {
-                case "A":
-                    aButton.backgroundColor = UIColor.grayColor()
-                    submitted = true
-                    checkAnswer()
+                    case "A":
+                        aButton.backgroundColor = UIColor.grayColor()
+                        submitted = true
+                        checkAnswer()
                     break
                 case "B":
                     bButton.backgroundColor = UIColor.grayColor()
