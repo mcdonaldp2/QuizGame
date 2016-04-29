@@ -406,6 +406,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     }
     
     func playQuiz() {
+        youWereCorrect = false 
         hideAnswers()
         pManager.resetPlayerValues()
         quizCount = quizCount + 1
