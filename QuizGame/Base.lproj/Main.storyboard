@@ -86,6 +86,7 @@
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w0e-wc-JpS">
                                         <rect key="frame" x="0.0" y="430" width="540" height="30"/>
+                                        <color key="backgroundColor" red="0.75881410256410253" green="0.75881410256410253" blue="0.75881410256410253" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Begin Quiz"/>
                                         <connections>
                                             <action selector="beginQuiz:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RcS-hp-ccn"/>

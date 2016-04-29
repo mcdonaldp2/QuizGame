@@ -14,7 +14,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     var handlerArray: [QuestionHandler]!
     var handler: QuestionHandler!
     var quizNumber: Int!
-
+    var gameOverAlert: UIAlertController!
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var singlePlayerButton: UIButton!
     @IBOutlet weak var multiplayerButton: UIButton!
@@ -77,21 +77,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     }
     
     @IBAction func goToMultiplayerQuiz(sender: UIButton) {
-        let dataToSend = "goToMulti"
         
-        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
-        
-        do{
-            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
-            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
-            
-            
-        }
-        catch let err
-        {
-            print("Error in sending data \(err)")
-        }
-
         singlePlayerButton.backgroundColor = unselectedColor
         multiplayerButton.backgroundColor = UIColor.greenColor()
         
@@ -105,6 +91,35 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         } else if (multiplayerButton.backgroundColor == UIColor.greenColor()) {
             
             print("go to multiplayer")
+            if session.connectedPeers.count == 0 {
+                gameOverAlert = UIAlertController(title: title, message: "You must be connected to other players to play multiplayer.", preferredStyle: UIAlertControllerStyle.Alert)
+                
+                gameOverAlert.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: { (action: UIAlertAction!) in
+                    //self.endPeersQuiz()
+                    
+                }))
+                
+                
+                
+                presentViewController(gameOverAlert, animated: true, completion: nil)
+            } else {
+                let dataToSend = "goToMulti"
+                
+                let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+                
+                do{
+                    //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+                    try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+                    
+                    
+                }
+                catch let err
+                {
+                    print("Error in sending data \(err)")
+                }
+
+            }
+            
             //performSegueWithIdentifier("quizSegue", sender: self)
         }
     }
