@@ -335,7 +335,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     func nextQuestion() {
         questionNumber += 1
         enableButtons()
-        
+        youWereCorrect = false
         if questionNumber < qHandler.questionCount {
             hideAnswers()
             pManager.resetCurrentAnswers()
