@@ -49,12 +49,8 @@ class SingleQuizViewController: UIViewController {
     var initialAttitude: CMAttitude!
     var attitudeTimer: NSTimer!
     
-    var rotX: Double = 0.0
-    var rotY: Double = 0.0
     var rotZ: Double = 0.0
     
-    var accelX: Double = 0.0
-    var accelY: Double = 0.0
     var accelZ: Double = 0.0
     
     var gameOverAlert: UIAlertController!
