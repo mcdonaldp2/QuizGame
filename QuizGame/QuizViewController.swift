@@ -104,6 +104,11 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         dButton.tag = 4
         origButtonColor = aButton.backgroundColor
         
+        autoSizeButtonText(aButton)
+        autoSizeButtonText(bButton)
+        autoSizeButtonText(cButton)
+        autoSizeButtonText(dButton)
+        
         questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
     }
 
@@ -134,7 +139,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
             answerImages[0].image = image
 
-            
+            disableButtons()
             
             //updates current players answer after selection
             checkAnswer(letter!)
@@ -304,7 +309,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     func nextQuestion() {
         questionNumber += 1
-        
+        enableButtons()
         
         if questionNumber < qHandler.questionCount {
             hideAnswers()
@@ -385,6 +390,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         timerLabel.text = String(timerCount)
         questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
         questionNumber = 0
+        enableButtons()
         setQuestion(qHandler.questionArray[0])
         
     }
@@ -465,6 +471,28 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         }
 
     }
+    
+    func disableButtons() {
+        aButton.enabled = false
+        bButton.enabled = false
+        cButton.enabled = false
+        dButton.enabled = false
+        
+    }
+    
+    func enableButtons() {
+        aButton.enabled = true
+        bButton.enabled = true
+        cButton.enabled = true
+        dButton.enabled = true
+    }
+    
+    func autoSizeButtonText(button: UIButton) {
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.minimumScaleFactor = 0.02
+    }
+    
+    
     
     
     
