@@ -163,7 +163,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         selectedAnswer = letter
         
         //Presents players own answer
-        var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+        let image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
         answerImages[0].image = image
         
         disableButtons()
@@ -349,8 +349,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         } else {
             print("game over")
             var title: String!
-            var score1 = Int(pManager.players[peerID.displayName]!.score)
-            var winner = pManager.getWinner()
+            let score1 = Int(pManager.players[peerID.displayName]!.score)
+            let winner = pManager.getWinner()
             var youWon = false
             for index in winner {
                 if index == peerID.displayName {
