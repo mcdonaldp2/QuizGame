@@ -419,6 +419,7 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         
         self.navigationItem.title = qHandler.topic
         reverseButtonColor(selectedButton)
+        selectedAnswer = "N/A"
         
         questionTimer = nil
         questionTotal = qHandler.questionCount
