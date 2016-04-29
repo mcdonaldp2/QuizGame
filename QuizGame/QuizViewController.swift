@@ -456,6 +456,10 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         } else {
             print("nothing needs to be changed")
         }
+//        aButton.backgroundColor = origButtonColor
+//        bButton.backgroundColor = origButtonColor
+//        cButton.backgroundColor = origButtonColor
+//        dButton.backgroundColor = origButtonColor
     }
     
     func hideUI(indexHide: Int) {
