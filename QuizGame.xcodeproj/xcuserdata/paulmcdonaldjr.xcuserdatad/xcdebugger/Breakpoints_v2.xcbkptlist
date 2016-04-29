@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "QuizGame/SingleQuizViewController.swift"
-            timestampString = "483575350.069643"
+            timestampString = "483652080.100094"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
             landmarkName = "SingleQuizViewController"
             landmarkType = "3">
          </BreakpointContent>

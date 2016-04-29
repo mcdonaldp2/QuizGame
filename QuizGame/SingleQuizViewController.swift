@@ -73,6 +73,7 @@ class SingleQuizViewController: UIViewController {
         setUpMotion()
         
         quizCount = -1
+        
         playQuiz()
     }
     
@@ -249,11 +250,15 @@ class SingleQuizViewController: UIViewController {
             timerCount = 20
             timerLabel.text = String(timerCount)
             questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(SingleQuizViewController.checkTime), userInfo: nil, repeats: true)
-            setQuestion(qHandler.questionArray[questionCount])
+            answer = "Z"
             answered = false
+            submitted = false
             answerImage.hidden = true
+            initialized = false
+            setQuestion(qHandler.questionArray[questionCount])
         }
         else {
+            submitted = true
             print("Quiz is over!")
             questionTimer.invalidate()
            // nextQuestionTimer.invalidate()
@@ -313,6 +318,7 @@ class SingleQuizViewController: UIViewController {
                 self.initialAttitude = data?.attitude
                 self.initialized = true
                 //self.attitudeTimer = NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(SingleQuizViewController.updateAttitude), userInfo: nil, repeats: true)
+                print(self.initialAttitude.pitch)
             }
             
             self.handleMotion((data?.attitude)!)
@@ -363,27 +369,31 @@ class SingleQuizViewController: UIViewController {
     }
     
     func handleMotion(attitude: CMAttitude){
-        
-        let roll = attitude.roll
-        let pitch = attitude.pitch
-        
-        if (roll > initialAttitude.roll + 0.75) {
-            moveRight()
-        } else if (roll < initialAttitude.roll - 0.75) {
-            moveLeft()
-        } else if (pitch > initialAttitude.pitch + 0.75) {
-            moveDown()
-        } else if (pitch < initialAttitude.pitch - 0.75) {
-            moveUp()
-        }
-        
         if submitted == false {
+            
+            let roll = attitude.roll
+            let pitch = attitude.pitch
+            // print(pitch)
+            if (roll > initialAttitude.roll + 0.5) {
+                moveRight()
+            } else if (roll < initialAttitude.roll - 0.5) {
+                moveLeft()
+            } else if (pitch > initialAttitude.pitch + 0.5) {
+                moveDown()
+                //print("\(pitch) > \(initialAttitude.pitch + 0.5)")
+            } else if (pitch < initialAttitude.pitch - 0.5) {
+                moveUp()
+                //print("\(pitch) < \(initialAttitude.pitch - 0.5)")
+                
+            }
+            
+            
             if (accelZ > 2 || accelZ < -2) || (rotZ > 3 || rotZ < -3) {
                 switch answer {
-                    case "A":
-                        aButton.backgroundColor = UIColor.grayColor()
-                        submitted = true
-                        checkAnswer()
+                case "A":
+                    aButton.backgroundColor = UIColor.grayColor()
+                    submitted = true
+                    checkAnswer()
                     break
                 case "B":
                     bButton.backgroundColor = UIColor.grayColor()
@@ -426,11 +436,13 @@ class SingleQuizViewController: UIViewController {
             resetButtonColor()
             bButton.backgroundColor = selectedColor
             answered = true
-        default:
+        case "Z":
             answer = "A"
             answerImage.image = UIImage(named: "aIcon")
             aButton.backgroundColor = selectedColor
             answered = true
+            break
+        default:
             break
         }
         answerImage.hidden = false
@@ -456,13 +468,14 @@ class SingleQuizViewController: UIViewController {
             break
         case "D":
             break
-        default:
+        case "Z":
             answer = "A"
             answerImage.image = UIImage(named: "aIcon")
             aButton.backgroundColor = selectedColor
             answered = true
             break
-            
+        default:
+            break
         }
         answerImage.hidden = false
     }
@@ -487,11 +500,13 @@ class SingleQuizViewController: UIViewController {
             cButton.backgroundColor = selectedColor
             answered = true
             break
-        default:
+        case "Z":
             answer = "A"
             answerImage.image = UIImage(named: "aIcon")
             aButton.backgroundColor = selectedColor
             answered = true
+            break
+        default:
             break
         }
         answerImage.hidden = false
@@ -517,17 +532,17 @@ class SingleQuizViewController: UIViewController {
             break
         case "D":
             break
-        default:
+        case "Z":
             answer = "A"
             answerImage.image = UIImage(named: "aIcon")
             aButton.backgroundColor = selectedColor
             answered = true
             break
+        default:
+            break
             
         }
         answerImage.hidden = false
     }
-
-
     
 }
