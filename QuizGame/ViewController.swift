@@ -45,7 +45,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         
         session.delegate = self
         browser.delegate = self
-	browser.maximumNumberOfPeers = 4
+        browser.maximumNumberOfPeers = 4
 
         
         quizNumber = 0
@@ -227,7 +227,9 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         handlerArray.append(handler)
     }
     
-    @IBAction func unwindToMenu(segue: UIStoryboardSegue){}
+    @IBAction func unwindToMenu(segue: UIStoryboardSegue){
+        //self.session.disconnect()
+    }
     
 }
 

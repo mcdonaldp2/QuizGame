@@ -329,13 +329,15 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             gameOverAlert = UIAlertController(title: winner, message: "You got \(score1)/\(qHandler.questionCount)", preferredStyle: UIAlertControllerStyle.Alert)
             
             gameOverAlert.addAction(UIAlertAction(title: "Back To Menu", style: .Default, handler: { (action: UIAlertAction!) in
+                //self.endPeersQuiz()
                 self.session.disconnect()
                 self.performSegueWithIdentifier("unwindToMenu", sender: nil)
+                
             }))
             
             gameOverAlert.addAction(UIAlertAction(title: "Replay Quiz", style: .Default, handler: { (action: UIAlertAction!) in
-                self.resetScoreLabels()
                 self.restartPeersQuiz()
+                self.resetScoreLabels()
                 self.playQuiz()
             }))
             
@@ -377,9 +379,6 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         question = qHandler.questionArray[0].questionSentence
         correctAnswer = qHandler.questionArray[0].correctOption
         options = qHandler.questionArray[0].options
-        
-        
-        
         
         timerCount = 20
         timerLabel.text = String(timerCount)
@@ -432,6 +431,24 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     func restartPeersQuiz() {
         let dataToSend = "restart"
+        
+        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+        
+        do{
+            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+            
+            
+        }
+        catch let err
+        {
+            print("Error in sending data \(err)")
+        }
+
+    }
+    
+    func endPeersQuiz() {
+        let dataToSend = "end"
         
         let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
         
@@ -516,12 +533,21 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
                 }
                 
             } else {
-                
-                if let restart = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String {
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    self.resetScoreLabels()
-                    self.restartPeersQuiz()
-                    self.playQuiz()
+                print("alertController click")
+                if let str = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String {
+                    if str == "restart" {
+                        print("in restart bock")
+                        self.dismissViewControllerAnimated(false, completion: nil)
+                        self.resetScoreLabels()
+                        //self.restartPeersQuiz()
+                        self.playQuiz()
+                    } else {
+                        print("in stop quiz block")
+                        self.dismissViewControllerAnimated(false, completion: nil)
+                        self.session.disconnect()
+                        self.performSegueWithIdentifier("unwindToMenu", sender: nil)
+                    }
+                    
                 }
             }
             
@@ -548,6 +574,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             
         case MCSessionState.NotConnected:
             print("Not Connected: \(peerID.displayName)")
+            self.session.disconnect()
+            self.performSegueWithIdentifier("unwindToMenu", sender: self)
         }
         
         
