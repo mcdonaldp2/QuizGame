@@ -8,6 +8,7 @@
 
 import UIKit
 import MultipeerConnectivity
+import CoreMotion
 
 class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessionDelegate, UINavigationControllerDelegate {
 
@@ -55,6 +56,22 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
     
     var youWereCorrect: Bool = false
     
+    
+    
+    
+    lazy var manager:CMMotionManager = {
+        let motion = CMMotionManager()
+        motion.accelerometerUpdateInterval = 0.2
+        motion.gyroUpdateInterval = 0.2
+        motion.deviceMotionUpdateInterval = 0.2
+        return motion
+    }()
+    var initialized: Bool = false
+    var initialAttitude: CMAttitude!
+    var attitudeTimer: NSTimer!
+    var rotZ: Double = 0.0
+    var accelZ: Double = 0.0
+    let selectedColor = UIColor.greenColor()
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -98,6 +115,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         session.delegate = self
         browser.delegate = self
         
+        setUpMotion()
+        
         aButton.tag = 1
         bButton.tag = 2
         cButton.tag = 3
@@ -126,59 +145,65 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             selectedButton = sender.tag
             
         } else {
-            
-            //Determines what button is pressed
             sender.backgroundColor = UIColor.lightGrayColor()
             let a = sender.titleLabel!.text
             let letter = a?.substringToIndex((a?.startIndex.advancedBy(1))!)
-            print("Letter: \(letter!)")
-            print("Peers: \(session.connectedPeers.count)")
-            selectedAnswer = letter!
-            
-            //Presents players own answer
-            var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
-            answerImages[0].image = image
-
-            disableButtons()
-            
-            //updates current players answer after selection
-            checkAnswer(letter!)
-            pManager.changePlayerAnswer(peerID.displayName, answer: letter!)
-            pManager.printPlayers()
-            
-            //dictionary that holds player values
-            let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter!, "playerScore": pManager.players[peerID.displayName]!.score]
-            
-            let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
-            
-            do{
-                //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
-                try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
-                
-                
-            }
-            catch let err
-            {
-                print("Error in sending data \(err)")
-            }
-            
-            if (self.pManager.allPlayersAnswered() == true) {
-                self.questionTimer.invalidate()
-                self.timerCount == 20
-                //self.updatePlayerAnswersUI()
-                self.updateScoreLabels()
-                
-                if self.youWereCorrect == true {
-                    self.timerLabel.text = "Correct!"
-                } else {
-                    self.timerLabel.text = "Wrong!"
-                }
-                
-                _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
-            }
-
+            submitAnswer(letter!)
 
         }
+        
+        
+    }
+    
+    func submitAnswer(letter: String) {
+        //Determines what button is pressed
+        
+        print("Letter: \(letter)")
+        print("Peers: \(session.connectedPeers.count)")
+        selectedAnswer = letter
+        
+        //Presents players own answer
+        var image: UIImage = UIImage(named: getAnswerImageName(selectedAnswer))!
+        answerImages[0].image = image
+        
+        disableButtons()
+        
+        //updates current players answer after selection
+        checkAnswer(letter)
+        pManager.changePlayerAnswer(peerID.displayName, answer: letter)
+        pManager.printPlayers()
+        
+        //dictionary that holds player values
+        let dataToSend = ["playerId": peerID.displayName, "playerAnswer": letter, "playerScore": pManager.players[peerID.displayName]!.score]
+        
+        let data = NSKeyedArchiver.archivedDataWithRootObject(dataToSend)
+        
+        do{
+            //try session.sendData(msg!.dataUsingEncoding(NSUTF16StringEncoding)!, toPeers: session.connectedPeers, withMode: .Unreliable)
+            try session.sendData(data, toPeers: session.connectedPeers, withMode: .Reliable)
+            
+            
+        }
+        catch let err
+        {
+            print("Error in sending data \(err)")
+        }
+        
+        if (self.pManager.allPlayersAnswered() == true) {
+            self.questionTimer.invalidate()
+            self.timerCount == 20
+            //self.updatePlayerAnswersUI()
+            self.updateScoreLabels()
+            
+            if self.youWereCorrect == true {
+                self.timerLabel.text = "Correct!"
+            } else {
+                self.timerLabel.text = "Wrong!"
+            }
+            
+            _ = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector:  #selector(QuizViewController.nextQuestion), userInfo: nil, repeats: false)
+        }
+
         
         
 //        //Determines what button is pressed
@@ -507,7 +532,258 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         button.titleLabel?.minimumScaleFactor = 0.02
     }
     
+    //*******************************************
+    //*************MOTION METHODS****************
+    //*******************************************
     
+    func setUpMotion(){
+        manager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!) { (accelerometerData: CMAccelerometerData?, NSError) -> Void in
+            
+            self.accelZ = (accelerometerData?.acceleration.z)!
+            
+        }
+        
+        manager.startGyroUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler: { (gyroData: CMGyroData?, NSError) -> Void in
+            
+            
+            self.rotZ = (gyroData?.rotationRate.z)!
+            
+            
+            
+        })
+        manager.startDeviceMotionUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler: { (data: CMDeviceMotion?, NSError) -> Void in
+            
+            if self.initialized == false {
+                self.initialAttitude = data?.attitude
+                self.initialized = true
+                //self.attitudeTimer = NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(SingleQuizViewController.updateAttitude), userInfo: nil, repeats: true)
+                print(self.initialAttitude.pitch)
+            }
+            
+            self.handleMotion((data?.attitude)!)
+            
+            
+        })
+    }
+    
+    func updateAttitude(){
+        initialAttitude = manager.deviceMotion?.attitude
+    }
+    
+    override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
+        if motion == .MotionShake {
+            print("you shook the phone")
+            randomAnswer()
+        }
+    }
+    
+    func randomAnswer() {
+        //submitted = false
+        let randomAnswer = arc4random_uniform(4)
+        
+        switch randomAnswer {
+        case 0:
+            selectedAnswer = "A"
+            
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            aButton.backgroundColor = selectedColor
+        case 1:
+            selectedAnswer  = "B"
+            reverseButtonColor(selectedButton)
+            selectedButton = 2
+            bButton.backgroundColor = selectedColor
+        case 2:
+            selectedAnswer = "C"
+            reverseButtonColor(selectedButton)
+            selectedButton = 3
+            cButton.backgroundColor = selectedColor
+        case 3:
+            selectedAnswer = "D"
+            reverseButtonColor(selectedButton)
+            selectedButton = 4
+            dButton.backgroundColor = selectedColor
+        default:
+            break
+        }
+    }
+    
+    func handleMotion(attitude: CMAttitude){
+        if aButton.enabled == true {
+            
+            let roll = attitude.roll
+            let pitch = attitude.pitch
+            // print(pitch)
+            if (roll > initialAttitude.roll + 0.5) {
+                moveRight()
+            } else if (roll < initialAttitude.roll - 0.5) {
+                moveLeft()
+            } else if (pitch > initialAttitude.pitch + 0.5) {
+                moveDown()
+                //print("\(pitch) > \(initialAttitude.pitch + 0.5)")
+            } else if (pitch < initialAttitude.pitch - 0.5) {
+                moveUp()
+                //print("\(pitch) < \(initialAttitude.pitch - 0.5)")
+                
+            }
+            
+            
+            if (accelZ > 2 || accelZ < -2) || (rotZ > 3 || rotZ < -3) {
+                switch selectedAnswer {
+                case "A":
+                    aButton.backgroundColor = UIColor.grayColor()
+                    submitAnswer("A")
+                    break
+                case "B":
+                    bButton.backgroundColor = UIColor.grayColor()
+                    submitAnswer("B")
+                    break
+                case "C":
+                    cButton.backgroundColor = UIColor.grayColor()
+                    submitAnswer("C")
+                    break
+                case "D":
+                    dButton.backgroundColor = UIColor.grayColor()
+                    submitAnswer("D")
+                    break
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    func moveUp(){
+        switch selectedAnswer  {
+        case "A":
+            break
+        case "B":
+            break
+        case "C":
+            selectedAnswer = "A"
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            aButton.backgroundColor = selectedColor
+            
+            break
+        case "D":
+            selectedAnswer = "B"
+            reverseButtonColor(selectedButton)
+            selectedButton = 2
+            bButton.backgroundColor = selectedColor
+            
+        case "N/A":
+            selectedAnswer = "A"
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            aButton.backgroundColor = selectedColor
+            
+            break
+        default:
+            break
+        }
+        
+    }
+    
+    func moveDown(){
+        switch selectedAnswer  {
+        case "A":
+            selectedAnswer = "C"
+            reverseButtonColor(selectedButton)
+            selectedButton = 3
+            cButton.backgroundColor = selectedColor
+            
+            break
+        case "B":
+            selectedAnswer = "D"
+            reverseButtonColor(selectedButton)
+            selectedButton = 4
+            dButton.backgroundColor = selectedColor
+            
+            break
+        case "C":
+            break
+        case "D":
+            break
+        case "N/A":
+            selectedAnswer = "A"
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            aButton.backgroundColor = selectedColor
+            
+            break
+        default:
+            break
+        }
+        
+    }
+    
+    func moveLeft(){
+        switch selectedAnswer  {
+        case "A":
+            break
+        case "B":
+            selectedAnswer = "A"
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            aButton.backgroundColor = selectedColor
+            
+            break
+        case "C":
+            break
+        case "D":
+            selectedAnswer = "C"
+            reverseButtonColor(selectedButton)
+            selectedButton = 3
+            cButton.backgroundColor = selectedColor
+            
+            break
+        case "N/A":
+            selectedAnswer = "A"
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            
+            break
+        default:
+            break
+        }
+        
+    }
+    
+    func moveRight(){
+        switch selectedAnswer  {
+        case "A":
+            selectedAnswer = "B"
+            reverseButtonColor(selectedButton)
+            selectedButton = 2
+            bButton.backgroundColor = selectedColor
+            
+            break
+        case "B":
+            break
+        case "C":
+            selectedAnswer = "D"
+            reverseButtonColor(selectedButton)
+            selectedButton = 4
+            dButton.backgroundColor = selectedColor
+            
+            break
+        case "D":
+            break
+        case "N/A":
+            selectedAnswer = "A"
+            reverseButtonColor(selectedButton)
+            selectedButton = 1
+            aButton.backgroundColor = selectedColor
+            
+            break
+        default:
+            break
+            
+        }
+        
+    }
+
     
     
     
