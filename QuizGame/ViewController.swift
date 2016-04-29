@@ -48,7 +48,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         browser.maximumNumberOfPeers = 4
 
         
-        quizNumber = -1
+        quizNumber = 0
         handlerArray = []
         beginConnection()
 
@@ -94,7 +94,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         if segue.identifier == "quizSegue" {
             if let destination = segue.destinationViewController as? QuizViewController {
                 destination.session = session as MCSession
-                destination.qHandler = handler as QuestionHandler
+                //destination.qHandler = handler as QuestionHandler
                 destination.qHandlerArray = handlerArray as [QuestionHandler]
             }
             
@@ -137,6 +137,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             print("inside didReceiveData")
             
             if let receivedString =  NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String{
+                print(receivedString)
                 self.performSegueWithIdentifier("quizSegue", sender: self)
             }
         })
@@ -194,7 +195,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
                 }
             } else {
                 print("done adding quizes!")
-                //print(self.handlerArray.count)
+                print(self.handlerArray.count)
                 
             }
         }

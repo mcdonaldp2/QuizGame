@@ -59,8 +59,8 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        quizCount = -1
-        quizCount = quizCount + 1
+        quizCount = 0
+        print("handler array count: \(qHandlerArray.count)")
         
         if (quizCount < qHandlerArray.count) {
             qHandler = qHandlerArray[quizCount]
@@ -272,8 +272,9 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
                 //var image: UIImage = UIImage(named: getAnswerImageName(playerValues.currentAnswer!))!
                 self.scoreLabels[count].text = String(playerValues.score)
                 //answerImages[0].frame = CGRectMake(0,0,100,200)
+                count += 1
             }
-            count += 1
+            
         }
 
     }
