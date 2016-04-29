@@ -120,7 +120,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
 
             }
             
-            //performSegueWithIdentifier("quizSegue", sender: self)
+            performSegueWithIdentifier("quizSegue", sender: self)
         }
     }
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
