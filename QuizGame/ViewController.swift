@@ -138,6 +138,15 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             
             if let receivedString =  NSKeyedUnarchiver.unarchiveObjectWithData(data) as? String{
                 print(receivedString)
+                if let topController = self.presentedViewController as? MCBrowserViewController {
+                    print("topController: \(topController)")
+                    
+                    print("found controller")
+                    self.dismissViewControllerAnimated(false, completion: nil)
+                    
+                    
+                }
+                
                 self.performSegueWithIdentifier("quizSegue", sender: self)
             }
         })
