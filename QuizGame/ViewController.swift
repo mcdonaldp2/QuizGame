@@ -48,14 +48,14 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         browser.maximumNumberOfPeers = 4
 
         
-        quizNumber = 0
+        quizNumber = -1
         handlerArray = []
         beginConnection()
 
     }
     
     override func viewDidAppear(animated: Bool) {
-        beginConnection()
+        //beginConnection()
     }
     
     override func didReceiveMemoryWarning() {
