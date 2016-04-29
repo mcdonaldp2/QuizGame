@@ -54,17 +54,28 @@ class playerManager {
     }
     
     
-    func getWinner() -> String {
-        var highscore = 0
-        var winningPlayer: String?
+    func getWinner() -> [String] {
+        var winningPlayersArray = [String]()
+        var highscore = -1
+        //var winningPlayer: String?
         for (player, playerValues) in players {
             if playerValues.getScore() > highscore {
                 highscore = playerValues.getScore()
-                winningPlayer = player
+                
             }
         }
         
-        return winningPlayer!
+        for (player, playerVal) in players {
+            if (playerVal.score == highscore) {
+                winningPlayersArray.append(player)
+            }
+        }
+        
+//        if (highscore == 0) {
+//            winningPlayer = "everyone"
+//        }
+        
+        return winningPlayersArray
     }
     
     func findPlayerIndex(playerId: String) -> Int {

@@ -323,16 +323,31 @@ class QuizViewController: UIViewController, MCBrowserViewControllerDelegate, MCS
             questionTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector:  #selector(QuizViewController.countDown), userInfo: nil, repeats: true)
         } else {
             print("game over")
-            
+            var title: String!
             var score1 = Int(pManager.players[peerID.displayName]!.score)
             var winner = pManager.getWinner()
-            if (peerID.displayName == winner) {
-                winner = "You won!"
-            } else {
-                winner = "You lost!"
+            var youWon = false
+            for index in winner {
+                if index == peerID.displayName {
+                    youWon = true
+                }
             }
             
-            gameOverAlert = UIAlertController(title: winner, message: "You got \(score1)/\(qHandler.questionCount)", preferredStyle: UIAlertControllerStyle.Alert)
+            if (winner.count > 1) {
+                if youWon == true {
+                    title = "You are one of the winners!"
+                } else {
+                    title = "You lose!"
+                }
+            } else {
+                if youWon == true {
+                    title = "You won!"
+                } else {
+                    title = "You lose!"
+                }
+            }
+            
+            gameOverAlert = UIAlertController(title: title, message: "You got \(score1)/\(qHandler.questionCount)", preferredStyle: UIAlertControllerStyle.Alert)
             
             gameOverAlert.addAction(UIAlertAction(title: "Back To Menu", style: .Default, handler: { (action: UIAlertAction!) in
                 //self.endPeersQuiz()
