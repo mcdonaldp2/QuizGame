@@ -20,6 +20,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     @IBOutlet weak var multiplayerButton: UIButton!
     @IBOutlet weak var connectBarButton: UIBarButtonItem!
     
+    var unselectedColor: UIColor!
+    
     var session: MCSession!
     var peerID: MCPeerID!
     
@@ -35,7 +37,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         self.peerID = MCPeerID(displayName: UIDevice.currentDevice().name)
         self.session = MCSession(peer: peerID)
         
-        
+        unselectedColor = singlePlayerButton.backgroundColor
         
         self.browser = MCBrowserViewController(serviceType: serviceType, session: session)
         assistant = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: self.session)
@@ -68,7 +70,10 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     }
     
     @IBAction func goToSinglePlayerQuiz(sender: UIButton) {
-        performSegueWithIdentifier("singleQuizSegue", sender: self)
+        multiplayerButton.backgroundColor = unselectedColor
+        singlePlayerButton.backgroundColor = UIColor.greenColor()
+        
+        //performSegueWithIdentifier("singleQuizSegue", sender: self)
     }
     
     @IBAction func goToMultiplayerQuiz(sender: UIButton) {
@@ -87,9 +92,22 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
             print("Error in sending data \(err)")
         }
 
-        performSegueWithIdentifier("quizSegue", sender: self)
+        singlePlayerButton.backgroundColor = unselectedColor
+        multiplayerButton.backgroundColor = UIColor.greenColor()
+        
+        
+        //performSegueWithIdentifier("quizSegue", sender: self)
     }
     
+    @IBAction func beginQuiz(sender: UIButton) {
+        if (singlePlayerButton.backgroundColor == UIColor.greenColor()) {
+            performSegueWithIdentifier("singleQuizSegue", sender: self)
+        } else if (multiplayerButton.backgroundColor == UIColor.greenColor()) {
+            
+            print("go to multiplayer")
+            //performSegueWithIdentifier("quizSegue", sender: self)
+        }
+    }
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "quizSegue" {
             if let destination = segue.destinationViewController as? QuizViewController {

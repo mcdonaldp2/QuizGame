@@ -87,6 +87,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w0e-wc-JpS">
                                         <rect key="frame" x="0.0" y="430" width="540" height="30"/>
                                         <state key="normal" title="Begin Quiz"/>
+                                        <connections>
+                                            <action selector="beginQuiz:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RcS-hp-ccn"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>
@@ -406,10 +409,10 @@
                         <outletCollection property="scoreLabels" destination="v0k-7N-Cnm" collectionClass="NSMutableArray" id="rCC-tr-n4L"/>
                         <outletCollection property="scoreLabels" destination="di7-es-ixp" collectionClass="NSMutableArray" id="vTi-Gf-HyE"/>
                         <outletCollection property="scoreLabels" destination="kRI-Ko-CWi" collectionClass="NSMutableArray" id="S3Y-ay-fjB"/>
-                        <outletCollection property="playerImages" destination="zaS-lQ-rpR" id="7To-Wd-3zF"/>
-                        <outletCollection property="playerImages" destination="FJ5-yk-2yG" id="0fe-fK-oAU"/>
-                        <outletCollection property="playerImages" destination="v8R-GT-KFz" id="NMx-nk-Gxt"/>
-                        <outletCollection property="playerImages" destination="bns-Fk-bxN" id="CxZ-Ur-2ff"/>
+                        <outletCollection property="playerImages" destination="zaS-lQ-rpR" collectionClass="NSMutableArray" id="7To-Wd-3zF"/>
+                        <outletCollection property="playerImages" destination="FJ5-yk-2yG" collectionClass="NSMutableArray" id="0fe-fK-oAU"/>
+                        <outletCollection property="playerImages" destination="v8R-GT-KFz" collectionClass="NSMutableArray" id="NMx-nk-Gxt"/>
+                        <outletCollection property="playerImages" destination="bns-Fk-bxN" collectionClass="NSMutableArray" id="CxZ-Ur-2ff"/>
                         <segue destination="wNO-d4-mrk" kind="unwind" identifier="unwindToMenu" unwindAction="unwindToMenu:" id="9I8-L1-DyB"/>
                     </connections>
                 </viewController>
